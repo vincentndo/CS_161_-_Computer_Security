@@ -1,0 +1,15 @@
+#!/bin/bash
+
+x=''
+num=6+16*8
+
+# num=1..5 still in block, num=6 shift to lower block, reduce in factor of 16
+
+for ((i=0; i<num; i++))
+do
+  x=$x'a'
+done
+
+echo $x
+
+# for ((i=0; i<$num; i++)); for i in `eval echo {0..$d}`; for i in $(seq $lowerlimit $upperlimit) all work; for i in {start..end..step} only works for numeric

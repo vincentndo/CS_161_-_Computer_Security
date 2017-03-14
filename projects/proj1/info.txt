@@ -1,0 +1,32 @@
+Q.1
+
+vsftpd
+zMne62>V
+
+ssh -p 2222 vsftpd@127.0.0.1
+zMne62>V
+
+scp -P 2222 vsftpd@127.0.0.1:~/egg .
+
+Q.2
+
+smith
+f6g(Bz{w
+
+ssh -p 2222 smith@127.0.0.1
+
+Q.3
+
+user: brown
+pass: Zsps7Z):
+
+Q.4
+
+jz
+a;Vn3/D@
+
+user: jones
+pass: Kg.ru8ng
+
+pwnd
+Congratulations, you are now r00t and 0wn the b0x!

