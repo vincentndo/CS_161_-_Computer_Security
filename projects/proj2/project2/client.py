@@ -49,11 +49,18 @@ class Client(BaseClient):
         all_value_string = util.to_json_string(all_value)
         self.storage_server.put(data_id, "[DATA] " + all_value_string)
 
+    def MAC_and_store_2(self, value_string, ka, data_id):
+        MACed_value_string = self.crypto.message_authentication_code(value_string, ka, "MD5")
+        half = int( len(MACed_value_string) / 4 )
+        all_value = (value_string, MACed_value_string[:half])
+        all_value_string = util.to_json_string(all_value)
+        self.storage_server.put(data_id, all_value_string)
+
     def AES_CBC_and_store(self, string, keys, uid):
         ka, ke = keys
         IV = self.crypto.get_random_bytes(16)
         cipher_string = self.crypto.symmetric_encrypt(string, ke, "AES", "CBC", IV)
-        tag = self.crypto.message_authentication_code(IV + cipher_string, ka, "MD5")
+        tag = self.crypto.message_authentication_code(IV + cipher_string + uid, ka, "MD5")
         cipher_all = (IV, cipher_string, tag)
         cipher_all_string = util.to_json_string(cipher_all)
         self.storage_server.put(uid, "[DATA] " + cipher_all_string)
@@ -89,6 +96,22 @@ class Client(BaseClient):
             else:
                 raise IntegrityError()
 
+    def check_integrity_and_get_value_2(self, ka, data_id):
+        all_value_string = self.storage_server.get(data_id)
+        if not all_value_string:
+            return None
+        else:
+            try:
+                value_string, MACed_value_string = util.from_json_string(all_value_string)
+                half = len(MACed_value_string)
+            except:
+                raise IntegrityError()
+
+            if self.crypto.message_authentication_code(value_string, ka, "MD5") [:half] == MACed_value_string:
+                return value_string
+            else:
+                raise IntegrityError()
+
     def make_unique_symmetric_key(self):
         kid = path_join(self.username, "info")
         all_k = self.storage_server.get(kid)
@@ -112,7 +135,7 @@ class Client(BaseClient):
     def get_file_keys(self, name):
         k = self.get_unique_symmetric_key()
         encrypted_filename = self.crypto.message_authentication_code(name, k, "MD5")
-        half = int(len(encrypted_filename)/2)
+        half = int(len(encrypted_filename)/4)
         encrypted_filename = encrypted_filename[:half]
         fid = self.revolve(path_join(self.username, encrypted_filename, "keys"))
         fkeys = self.storage_server.get(fid)
@@ -149,7 +172,7 @@ class Client(BaseClient):
         ka, ke, k = all_keys
         keys = (ka, ke)
         cipher_name = self.crypto.message_authentication_code(name, k, "MD5")
-        half = int(len(cipher_name)/2)
+        half = int(len(cipher_name)/4)
         cipher_name = cipher_name[:half]
         uid = self.revolve(path_join(self.username, cipher_name))
 
@@ -168,7 +191,7 @@ class Client(BaseClient):
         ka, ke, k = all_keys
         keys = (ka, ke)
         cipher_name = self.crypto.message_authentication_code(name, k, "MD5")
-        half = int(len(cipher_name)/2)
+        half = int(len(cipher_name)/4)
         cipher_name = cipher_name[:half]
         uid = self.revolve(path_join(self.username, cipher_name))
         merkle_tree = MerkleTree(self, value)
@@ -206,7 +229,7 @@ class Client(BaseClient):
         ka, ke= self.get_file_keys(name)
         k = self.get_unique_symmetric_key()
         cipher_name = self.crypto.message_authentication_code(name, k, "MD5")
-        half = int(len(cipher_name)/2)
+        half = int(len(cipher_name)/4)
         cipher_name = cipher_name[:half]
         uid = self.revolve(path_join(self.username, cipher_name))
         res = self.storage_server.get(uid)
@@ -220,7 +243,7 @@ class Client(BaseClient):
             except:
                 raise IntegrityError()
 
-            new_tag = self.crypto.message_authentication_code(IV + cipher_value, ka, "MD5")
+            new_tag = self.crypto.message_authentication_code(IV + cipher_value + uid, ka, "MD5")
 
             if old_tag != new_tag:
                 raise IntegrityError()
@@ -242,7 +265,7 @@ class Client(BaseClient):
                 except:
                     raise IntegrityError()
 
-                new_tag = self.crypto.message_authentication_code(IV + cipher_value, ka, "MD5")
+                new_tag = self.crypto.message_authentication_code(IV + cipher_value + uid_i, ka, "MD5")
 
                 if old_tag != new_tag:
                     raise IntegrityError()
@@ -260,7 +283,7 @@ class Client(BaseClient):
     def get_owner_and_encrypted_original_filename(self, filename):
         k = self.get_unique_symmetric_key()
         cipher_filename = self.crypto.message_authentication_code(filename, k, "MD5")
-        half = int(len(cipher_filename)/2)
+        half = int(len(cipher_filename)/4)
         cipher_filename = cipher_filename[:half]
         uid = path_join(self.username, cipher_filename)
         while True:
@@ -324,7 +347,7 @@ class Client(BaseClient):
 
             k = self.get_unique_symmetric_key()
             encrypted_newfilename = self.crypto.message_authentication_code(newname, k, "MD5")
-            half = int(len(encrypted_newfilename)/2)
+            half = int(len(encrypted_newfilename)/4)
             encrypted_newfilename = encrypted_newfilename[:half]
             fid = path_join(self.username, encrypted_newfilename, "keys")
             keys_link = path_join(self.username, encrypted_original_filename, "keys")
@@ -343,7 +366,7 @@ class Client(BaseClient):
         old_ka, old_ke = old_keys
         k = self.get_unique_symmetric_key()
         cipher_name = self.crypto.message_authentication_code(name, k, "MD5")
-        half = int(len(cipher_name)/2)
+        half = int(len(cipher_name)/4)
         cipher_name = cipher_name[:half]
         interface_id = path_join(user, cipher_name)
         self.storage_server.delete(interface_id)
@@ -364,7 +387,7 @@ class Client(BaseClient):
     def re_encrypt_file(self, name):
         k = self.get_unique_symmetric_key()
         encrypted_filename = self.crypto.message_authentication_code(name, k, "MD5")
-        half = int(len(encrypted_filename)/2)
+        half = int(len(encrypted_filename)/4)
         encrypted_filename = encrypted_filename[:half]
         fid = self.revolve(path_join(self.username, encrypted_filename, "keys"))
         value = self.download(name)
@@ -477,8 +500,7 @@ class MerkleTree:
                 return
             else:
                 uid_label = path_join(uid, "", str(node.get_label()))
-                # client.MAC_and_store(node.get_hash_value(), ka, uid_label)
-                client.storage_server.put(uid_label, node.get_hash_value())  # <--
+                client.MAC_and_store_2(node.get_hash_value(), ka, uid_label)
                 store_tree_helper(node.get_left())
                 store_tree_helper(node.get_right())
 
@@ -492,9 +514,7 @@ class MerkleTree:
         def find_update_list_helper(node, label):
             hash_value = node.get_hash_value()
             uid_label = path_join(uid, "", str(label))
-            # server_value = client.check_integrity_and_get_value(ka, uid_label)
-            server_value = client.storage_server.get(uid_label)
-            # server_value = server_value[7:]
+            server_value = client.check_integrity_and_get_value_2(ka, uid_label)
             if hash_value != server_value:
                 if node.is_leaf():
                     update_component = (node.get_chunk_index(), uid_label, hash_value)
@@ -516,5 +536,4 @@ class MerkleTree:
             start, end = chunk_index * chunk, min(len(self.string), (chunk_index + 1) * chunk)
             new_value = self.string[start : end]
             self.client.AES_CBC_and_store(new_value, keys, uid_i)
-            # self.client.MAC_and_store(hash_value, ka, uid_label)
-            self.client.storage_server.put(uid_label, hash_value)  # <--
+            self.client.MAC_and_store_2(hash_value, ka, uid_label)
