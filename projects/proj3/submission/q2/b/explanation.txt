@@ -1,0 +1,10 @@
+a) First, I look at generate_rsa_key.c to see that the algorithm is not secure at the line
+seed = time_micro_sec >> 7;
+It narrows down the domain of seed. Thus, I think of dictionary attack to loop through the possible value of seed from 0 to (UINT_MAX >> 7). For each seed, I generate a public-private key pairs, then compare the generated public key to the provided server public key. If they match, then the corresponding private key is what I need.
+Subsequently, I insert the private key into Wireshark to decrypt the traffic and obtain the secret
+4b555656f3c3d06d
+
+b) The line number is 148:
+seed = time_micro_sec >> 7;
+Fixing this line make the schema more secure but not very secure since the seed is still guessable in the manner that:
+seed = time_in_seconds + time_in_miliseconds from Jan 1st, 1970

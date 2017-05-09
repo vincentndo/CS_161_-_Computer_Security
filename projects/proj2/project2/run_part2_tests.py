@@ -23,101 +23,20 @@ from run_part1_tests import run_part1_tests
 
 globs = dict(globals())
 
-def t01_StoreManyKeys(C, pks, crypto, server):
-    """Verify that it is reasonably efficient to store many keys on the server."""
-    alice = C("alice")
-    for k in range(1000):
-        alice.upload(str(k),str(k))
-    alice2 = C("alice")
-    for k in range(1000):
-        if alice2.download(str(k)) != str(k):
-            return 0.0
-    return 1.0
 
-
-def t02_OverwritePuts(C, pks, crypto, server):
-    """A long file when changed byte by byte will have the correct result at the
-    end."""
-    alice = C("alice")
-    data = "a"*100000
-    for _ in range(100):
-        data = list(map(str, data))
-        data[random.randint(0, len(data) - 1)] = chr(random.randint(0, 255))
-        data = "".join(data)
-        alice.upload("k", data)
-        if alice.download("k") != data:
-            return 0.0
-    return 1.0
-
-
-def t03_MoreOverwritePuts(C, pks, crypto, server):
-    """A long file when changed many bytes at a time, will have the correct result 
-    at the end."""
-    alice = C("alice")
-    data = "a"*100000
-    for _ in range(100):
-        data = list(map(str, data))
-        size = random.randint(10,10000)
-        start = random.randint(0, len(data) - size)
-        data[start:start+size] = [chr(random.randint(0, 255)) for _ in range(size)]
-        data = "".join(data)
-        alice.upload("k", data)
-        if alice.download("k") != data:
-            return 0.0
-    return 1.0
-
-
-def t04_LengthChangingPuts(C, pks, crypto, server):
-    """Verifies that it is possible to change the length of a file once on the
-    server."""
-    alice = C("alice")
-    for _ in range(100):
-        data = "".join(chr(random.randint(0, 255)) for _ in
-                       range(random.randint(1, 20000)))
-        alice.upload("k", data)
-    return float(alice.download("k") == data)
-
-
-def t05_SmallLengthChangingPuts(C, pks, crypto, server):
-    """Randomly adds or deletes a small number of bytes from a file, and ensures
-    data is correct."""
-    alice = C("alice")
-    data = "".join(chr(random.randint(0, 255)) for _ in range(10000))
-    for _ in range(100):
-        i = random.randint(0, len(data)-1)
-        if random.randint(0, 1) == 0:
-            insert = ("".join(chr(random.randint(0, 255)) for _ in
-                              range(random.randint(1, 10))))
-            data = data[:i] + insert + data[i:]
-        else:
-            data = data[:i] + data[i + random.randint(1, 10):]
-        alice.upload("k", data)
-    return float(alice.download("k") == data)
-
-
-def t06_PutOffByOneSize(C, pks, crypto, server):
-    """Uploads a file with only a few bytes different by changing its
-    length."""
-    alice = C("alice")
-    alice.upload("k", "a" * 10000)
-    alice.upload("k", "a" * 10000 + "b")
-    score = alice.download("k") == "a" * 10000 + "b"
-    alice.upload("k", "a" * 9999 + "b")
-    score += alice.download("k") == "a" * 9999 + "b"
-    return score / 2.0
-
-
-def t07_SimpleSharing(C, pks, crypto, server):
+def t01_SimpleSharing(C, pks, crypto, server):
     """Checks that sharing works in the simplest case of sharing one file."""
     alice = C("alice")
     bob = C("bob")
     alice.upload("k", "v")
     m = alice.share("bob", "k")
+    if not isinstance(m, str):
+        return 0.0
     bob.receive_share("alice", "k", m)
     return float(bob.download("k") == "v")
 
 
-def t08_SimpleTransitiveSharing(C, pks, crypto, server):
+def t02_SimpleTransitiveSharing(C, pks, crypto, server):
     """Checks that sharing a file can be done multiple times and is
     transitive."""
     alice = C("alice")
@@ -132,7 +51,7 @@ def t08_SimpleTransitiveSharing(C, pks, crypto, server):
             carol.download("k") == "v")) / 3.0
 
 
-def t09_SharingIsPassByReference(C, pks, crypto, server):
+def t03_SharingIsPassByReference(C, pks, crypto, server):
     """Verifies that updates to a file are sent to all other users who have that
     file."""
     alice = C("alice")
@@ -146,7 +65,7 @@ def t09_SharingIsPassByReference(C, pks, crypto, server):
     return score / 2.0
 
 
-def t10_SharingIsPassByReference2(C, pks, crypto, server):
+def t04_SharingIsPassByReference2(C, pks, crypto, server):
     """Verifies that updates to a file are sent to all other users who have that
     file."""
     alice = C("alice")
@@ -169,7 +88,7 @@ def t10_SharingIsPassByReference2(C, pks, crypto, server):
     return score / 4.0
 
 
-def t11_EfficientPutChangedData(C, pks, crypto, server):
+def t05_EfficientPutChangedData(C, pks, crypto, server):
     """Verifies that when two users have access to a file they keep their state
     current."""
     alice = C("alice")
@@ -185,7 +104,7 @@ def t11_EfficientPutChangedData(C, pks, crypto, server):
     return score / 3.0
 
 
-def t12_SharedStateIsChecked(C, pks, crypto, server):
+def t06_SharedStateIsChecked(C, pks, crypto, server):
     """Verifies that when two users have access to a file they keep their state
     current."""
     alice = C("alice")
@@ -204,7 +123,7 @@ def t12_SharedStateIsChecked(C, pks, crypto, server):
     return score / 2.0
 
 
-def t13_ShareRevokeShare(C, pks, crypto, server):
+def t07_ShareRevokeShare(C, pks, crypto, server):
     """Checks that after a user has been revoked from a file, they can receive
     it again."""
     alice = C("alice")
@@ -245,7 +164,7 @@ def t13_ShareRevokeShare(C, pks, crypto, server):
     return score / 8.0
 
 
-def t14_SimpleSubtreeRevoke(C, pks, crypto, server):
+def t08_SimpleSubtreeRevoke(C, pks, crypto, server):
     """Simple verification that revocation also revokes all grandchildren of a
     file."""
     def share(a, b, k):
@@ -311,7 +230,7 @@ def t14_SimpleSubtreeRevoke(C, pks, crypto, server):
     return score / 20.0
 
 
-def t15_MultiLevelSharingRevocation(C, pks, crypto, server):
+def t09_MultiLevelSharingRevocation(C, pks, crypto, server):
     """Creates many users and shares the file in a random tree structure,
     revoking one child, and verifies that updates are correctly reflected."""
     clients = [C("c"+str(i)) for i in range(100)]
@@ -381,6 +300,7 @@ class StudentTester:
             return myclient.Client(server, pks, crypto, name)
         return t(C, pks, crypto, server)
 
+
 def run_part2_tests():
     """Runs all part 2 functionality tests."""
     for testname, test in functionality_tests:
@@ -388,19 +308,17 @@ def run_part2_tests():
         print("Running test", testname)
         try:
             score = StudentTester("client").run_test(test)
-            if testname[:2] != 'z0':
-                if score >= .99999:
-                    print("\tTest Passes")
-                else:
-                    print("\tTest FAILED.")
-                    print("\t"+test.__doc__)
+            if score >= .99999:
+                print("\tTest Passes")
             else:
-                print("\tPerformance Test result", score)
+                print("\tTest FAILED.")
+                print("\t"+test.__doc__)
         except:
             print("\tTest FAILED.")
             print("\t"+test.__doc__)
             traceback.print_exc()
             print("\n\n")
+
 
 if __name__ == "__main__":
     print("PART 1 TESTS")

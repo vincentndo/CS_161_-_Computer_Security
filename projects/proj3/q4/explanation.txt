@@ -1,0 +1,15 @@
+a) First, we find the attack vector. That is we can implement DNS spoofing as following:
+
+Step 1. Make spoof packet by writing pcap_tool.py
+
+Step 2. Runt ./pcap_tool.py
+
+Step 3. Make CSR by running openssl req -nodes -newkey rsa:2048 -keyout email.priv -out email.req
+
+Step 4. Sign certificate by running ./sign email.priv email.req -out email.x509
+
+Step 4. Run ./local_webserver email.x509 email.priv to get the secret
+ae75b56ed137370f
+
+
+b) The governor must have different certificates

@@ -31,10 +31,26 @@ def t01_SimpleGetPut(C, pks, crypto, server):
 
 def t02_SimpleGetPutNoState(C, pks, crypto, server):
     """Verifies that clients maintain no state about keys stored."""
+    score = 0
+
     alice = C("alice")
     alice2 = C("alice")
     alice.upload("a", "b")
-    return float(alice2.download("a") == "b")
+    score += alice2.download("a") == "b"
+
+    server.kv = {}
+    alice = C("alice")
+    alice2 = C("alice")
+    alice2.upload("a", "b")
+    score += alice.download("a") == "b"
+
+    server.kv = {}
+    alice = C("alice")
+    alice.upload("a", "b")
+    alice2 = C("alice")
+    score += alice2.download("a") == "b"
+
+    return float(score) / 3.0
 
 
 def t03_SingleClientManyPuts(C, pks, crypto, server):
@@ -100,6 +116,7 @@ def t06_ManyGetPuts(C, pks, crypto, server):
                 good += 1
             total += 1
     return float(good) / total
+
 
 def t07_SimpleGetPut(C, pks, crypto, server):
     """Tests that the server can handle long file names and keys"""
@@ -173,6 +190,7 @@ class StudentTester:
             return myclient.Client(server, pks, crypto, name)
         return t(C, pks, crypto, server)
 
+
 def run_part1_tests():
     """Runs all part 1 functionality tests."""
     for testname, test in functionality_tests:
@@ -191,6 +209,7 @@ def run_part1_tests():
             traceback.print_exc()
             print("\n\n")
     StudentTester("client").run_test(FuzzTester)
+
 
 if __name__ == "__main__":
     print("PART 1 TESTS")

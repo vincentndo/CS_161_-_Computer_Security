@@ -3,8 +3,8 @@
 """Autograder tests for Part 3.
 
 Run this script (``python3 run_part3_tests.py``) from the same directory as
-your ``client.py`` file. This will run all of the functionality tests for
-Part 3 of the project.
+your ``client.py`` file. This will run all of the functionality and performance
+tests for Part 3 of the project.
 """
 
 import random
@@ -18,12 +18,9 @@ from run_part1_tests import run_part1_tests
 from run_part2_tests import run_part2_tests
 
 
-#########################
-#  FUNCTIONALITY TESTS  #
-#########################
-
-globs = dict(globals())
-
+#########################################
+#  FUNCTIONALITY AND PERFORMANCE TESTS  #
+#########################################
 
 class PerfServer(StorageServer):
     size = 0
@@ -47,6 +44,93 @@ class PerfServer(StorageServer):
     def delete(self, k):
         self.size += len(bytes(k,'utf-8'))
         return super().delete(k)
+
+
+globs = dict(globals())
+
+
+def t01_StoreManyKeys(C, pks, crypto, server):
+    """Verify that it is reasonably efficient to store many keys on the server."""
+    alice = C("alice")
+    for k in range(1000):
+        alice.upload(str(k),str(k))
+    alice2 = C("alice")
+    for k in range(1000):
+        if alice2.download(str(k)) != str(k):
+            return 0.0
+    return 1.0
+
+
+def t02_OverwritePuts(C, pks, crypto, server):
+    """A long file when changed byte by byte will have the correct result at the
+    end."""
+    alice = C("alice")
+    data = "a"*100000
+    for _ in range(100):
+        data = list(map(str, data))
+        data[random.randint(0, len(data) - 1)] = chr(random.randint(0, 255))
+        data = "".join(data)
+        alice.upload("k", data)
+        if alice.download("k") != data:
+            return 0.0
+    return 1.0
+
+
+def t03_MoreOverwritePuts(C, pks, crypto, server):
+    """A long file when changed many bytes at a time, will have the correct result
+    at the end."""
+    alice = C("alice")
+    data = "a"*100000
+    for _ in range(100):
+        data = list(map(str, data))
+        size = random.randint(10,10000)
+        start = random.randint(0, len(data) - size)
+        data[start:start+size] = [chr(random.randint(0, 255)) for _ in range(size)]
+        data = "".join(data)
+        alice.upload("k", data)
+        if alice.download("k") != data:
+            return 0.0
+    return 1.0
+
+
+def t04_LengthChangingPuts(C, pks, crypto, server):
+    """Verifies that it is possible to change the length of a file once on the
+    server."""
+    alice = C("alice")
+    for _ in range(100):
+        data = "".join(chr(random.randint(0, 255)) for _ in
+                       range(random.randint(1, 20000)))
+        alice.upload("k", data)
+    return float(alice.download("k") == data)
+
+
+def t05_SmallLengthChangingPuts(C, pks, crypto, server):
+    """Randomly adds or deletes a small number of bytes from a file, and ensures
+    data is correct."""
+    alice = C("alice")
+    data = "".join(chr(random.randint(0, 255)) for _ in range(10000))
+    for _ in range(100):
+        i = random.randint(0, len(data)-1)
+        if random.randint(0, 1) == 0:
+            insert = ("".join(chr(random.randint(0, 255)) for _ in
+                              range(random.randint(1, 10))))
+            data = data[:i] + insert + data[i:]
+        else:
+            data = data[:i] + data[i + random.randint(1, 10):]
+        alice.upload("k", data)
+    return float(alice.download("k") == data)
+
+
+def t06_PutOffByOneSize(C, pks, crypto, server):
+    """Uploads a file with only a few bytes different by changing its
+    length."""
+    alice = C("alice")
+    alice.upload("k", "a" * 10000)
+    alice.upload("k", "a" * 10000 + "b")
+    score = alice.download("k") == "a" * 10000 + "b"
+    alice.upload("k", "a" * 9999 + "b")
+    score += alice.download("k") == "a" * 9999 + "b"
+    return score / 2.0
 
 
 def z01_SimplePerformanceTest(C, pks, crypto, server=PerfServer, size=1024*1024, other=False):
@@ -218,6 +302,7 @@ class StudentTester:
             return myclient.Client(server, pks, crypto, name)
         return t(C, pks, crypto, server)
 
+
 def run_part3_tests():
     """Runs all part 3 functionality tests."""
     for testname, test in functionality_tests:
@@ -238,6 +323,7 @@ def run_part3_tests():
             print("\t"+test.__doc__)
             traceback.print_exc()
             print("\n\n")
+
 
 if __name__ == "__main__":
     print("PART 1 TESTS")

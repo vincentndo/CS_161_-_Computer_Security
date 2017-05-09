@@ -1,0 +1,21 @@
+a) First, we look at client.fragment.py to find the vulnarabilities. There are two: the first one is extracting substring by looping through the original and comparing with '/'; the second one is the way C handle string with null terminator. We attack as following:
+
+Step 1. Run openssl req -nodes -newkey rsa:2048 -keyout data0.priv -out data0.req to make CSR, or openssl req -nodes -newkey rsa:2048 -keyout data1.priv -out data1.req
+
+Step 2. Enter the CN is data.gov-of-caltopia.info/abc.neocal.info, or data.gov-of-caltopia.info\x00.neocal.info
+
+Step 3. Make the certificate at https://budget-certs-r-us.biz/
+
+Step 4. Intall ./sslsniff_install_cert data0.x509 data0.priv, or ./sslsniff_install_cert data1.x509 data1.priv
+
+Step 5. Modify the trafic by writing the code rewrite.py
+
+Step 6. Run ./sslsniff to get the secret
+ef2c24b4288b7245
+
+
+b) gov-of-caltopia.info has to make the certificate verification stronger: do not using C language and do not loop and compare string to find the CN.
+
+c) The governor must replace the router
+
+d) https://budget-certs-r-us.biz/ must check the whole CN before signing it.

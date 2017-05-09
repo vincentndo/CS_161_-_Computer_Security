@@ -1,0 +1,16 @@
+a) Basically, I followed steps outlined in the specs that can be summarize as following:
+
+Step 1. Open q2a.pcap in Wireshark
+
+Step 2. Insert q2a_private.priv into SSL section.
+
+Step 3. Look for HTTP protocol where the plain text is decrypted. The secret is:
+2dd10c16f7ef3861
+
+
+b) Cryptographic Algorithms:
+
+RSA: public-private key pairs to encrypt-decrypt data
+
+
+c) If the private key is revealed, there is no tecnical way to prevent from decrypting data unless another encryption algorithm is implemented, since the private key is the only main tool to decrypt the data that is encrypted by the public key. 

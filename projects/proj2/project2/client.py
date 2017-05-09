@@ -12,7 +12,6 @@ included functionality tests.
 from base_client import BaseClient, IntegrityError
 from crypto import CryptoError
 import util
-import sys
 
 chunk = 512
 

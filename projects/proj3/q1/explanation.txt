@@ -1,0 +1,12 @@
+Step 1. Run ifconfig to find neo's IP address. It is 10.161.161.161
+
+Step 2.Run nmap 10.161.161.161/24 to find running subnets and processes. The victim's IP address is 10.161.161.111 running ftp service.
+
+Step 3. Run fpt 10.161.161.111 then enter username and password. Username must have smile icon
+username: abcdef:)
+password: 123456
+
+Step 4. Open another terminal run nc 10.161.161.111
+
+Step 5. Run cat secret.txt to see
+d0b1e7032597c6f9
