@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html dir="ltr" class="client-js ve-available" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>Clickjacking Defense Cheat Sheet - OWASP</title>
+<script async="" src="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/analytics.js"></script><script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Clickjacking_Defense_Cheat_Sheet","wgTitle":"Clickjacking Defense Cheat Sheet","wgCurRevisionId":220436,"wgRevisionId":220436,"wgArticleId":28193,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Cheatsheets"],"wgBreakFrames":true,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Clickjacking_Defense_Cheat_Sheet","wgRelevantArticleId":28193,"wgRequestId":"f1c00637d6a2a52a25e9c13b","wgIsProbablyEditable":false,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgWikiEditorEnabledModules":{"toolbar":true,"dialogs":true,"preview":true,"publish":true},"wgHeaderTabsTabIndexes":[],"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","usePageImages":false,"usePageDescriptions":false},"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgVisualEditorToolbarScrollOffset":0});mw.loader.implement("user.options",function($,jQuery,require,module){mw.user.options.set({"variant":"en"});});mw.loader.implement("user.tokens",function ( $, jQuery, require, module ) {
+mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});/*@nomin*/;
+
+});mw.loader.load(["mediawiki.page.startup","ext.visualEditor.desktopArticleTarget.init","skins.vector.js"]);});</script>
+<link rel="stylesheet" href="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/load.css">
+<link rel="stylesheet" href="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/ext.css">
+<style>
+.postedit-container{margin:0 auto;position:fixed;top:0;height:0;left:50%;z-index:1000;font-size:13px}.postedit-container:hover{cursor:pointer}.postedit{position:relative;top:0.6em;left:-50%;padding:.6em 3.6em .6em 1.1em;line-height:1.5625em;color:#626465;background-color:#f4f4f4;border:1px solid #dcd9d9;text-shadow:0 0.0625em 0 rgba(255,255,255,0.5);border-radius:5px;box-shadow:0 2px 5px 0 #ccc;-webkit-transition:all 0.25s ease-in-out;-moz-transition:all 0.25s ease-in-out;-ms-transition:all 0.25s ease-in-out;-o-transition:all 0.25s ease-in-out;transition:all 0.25s ease-in-out}.skin-monobook .postedit{top:6em !important}.postedit-faded{opacity:0}.postedit-icon{padding-left:41px;  line-height:25px;background-repeat:no-repeat;background-position:8px 50%}.postedit-icon-checkmark{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB9ElEQVR4AZWRA3AYURQArxrVHtW2bdu2bdu2zdi2bdu2bWxs7zeehZaw4f70kbs+zI3e/nWK+RWx3aOFlrL56Sy5SxrruG69hlv6OyK+mz+8KDSXdXembj0ispT7tjs4ZTIbpYBvxGSGKzZTeFrb7W/meN002swFs0U8ttpHTkF2BvCqWQrW35929bTsKm5Zb+SEwWwcY8wAngB9m7Z+d+rIPZ/npdy12M5p47n8dXsCYAf0qPy06eGMdktuDu9Qf+JmKl3SWM91qzVcN9tAbEYkwMaq0tyb1m/To5kP170el/BK8/qa6sJr70ydf+T/Uu5ab+Oo/lS0AkUBpIFWlZ9WPhxpse/PHO7YbOOczjL0vZV2lNxPPtG73dYXM+xvm2znrOl83tidoqCwMBgYXsPFB0on5S6pr+eK5TKuW67lgvaKvF8mL1dtfTL32FHxRdyx3cQpg7m4x9sCXKkTIzA4LDH44zWdzaUf71hv5rTG4uyzcusybxSX7aThbMQ8XgCYAp3rzTTQOiIh9PNlzY3FSuZxrzjme1Y7uGS6kjsWO4jPjM4FVjRZsvD4kO9XtTZzQn82NyzWc0B7AmZh6gA/hOYSGhfw9YbOVnarj+S7800AL2BIsxUAbWNToj7bhBuQmZcOsFdoKUC74rGheCwXmqAIQTc9jQcrADIAAAAASUVORK5CYII=);background-image:url(/resources/src/mediawiki.action/images/green-checkmark.png?d94f1)!ie;background-position:left}.postedit-close{position:absolute;padding:0 .8em;right:0;top:0;font-size:1.25em;font-weight:bold;line-height:2.3em;color:black;text-shadow:0 0.0625em 0 white;text-decoration:none;opacity:0.2;filter:alpha(opacity=20)}.postedit-close:hover{color:black;text-decoration:none;opacity:0.4;filter:alpha(opacity=40)}
+.ui-helper-hidden{display:none}.ui-helper-hidden-accessible{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.ui-helper-reset{margin:0;padding:0;border:0;outline:0;line-height:1.3;text-decoration:none;font-size:100%;list-style:none}.ui-helper-clearfix:before,.ui-helper-clearfix:after{content:"";display:table;border-collapse:collapse}.ui-helper-clearfix:after{clear:both}.ui-helper-clearfix{zoom:1}.ui-helper-zfix{width:100%;height:100%;top:0;left:0;position:absolute;opacity:0;filter:Alpha(Opacity=0)} .ui-state-disabled{cursor:default !important}  .ui-icon{display:block;text-indent:-99999px;overflow:hidden;background-repeat:no-repeat}  .ui-widget-overlay{position:absolute;top:0;left:0;width:100%;height:100%}  .ui-widget{font-family:Verdana,Arial,sans-serif;font-size:1.1em}.ui-widget .ui-widget{font-size:1em}.ui-widget input,.ui-widget select,.ui-widget textarea,.ui-widget button{font-family:Verdana,Arial,sans-serif;font-size:1em}.ui-widget-content{border:1px solid #aaaaaa;background:#ffffff url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_flat_75_ffffff_40x100.png?81e0f) 50% 50% repeat-x;color:#222222}.ui-widget-header{border:1px solid #aaaaaa;background:#cccccc url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png?52261) 50% 50% repeat-x;color:#222222;font-weight:bold} .ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default{border:1px solid #d3d3d3;background:#e6e6e6 url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png?944bb) 50% 50% repeat-x;font-weight:normal;color:#555555}.ui-state-default a,.ui-state-default a:link,.ui-state-default a:visited{color:#555555;text-decoration:none}.ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover,.ui-state-focus,.ui-widget-content .ui-state-focus,.ui-widget-header .ui-state-focus{border:1px solid #999999;background:#dadada url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_glass_75_dadada_1x400.png?78379) 50% 50% repeat-x;font-weight:normal;color:#212121}.ui-state-hover a,.ui-state-hover a:hover,.ui-state-hover a:link,.ui-state-hover a:visited{color:#212121;text-decoration:none}.ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active{border:1px solid #aaaaaa;background:#ffffff url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_glass_65_ffffff_1x400.png?bd8a3) 50% 50% repeat-x;font-weight:normal;color:#212121}.ui-state-active a,.ui-state-active a:link,.ui-state-active a:visited{color:#212121;text-decoration:none} .ui-state-highlight,.ui-widget-content .ui-state-highlight,.ui-widget-header .ui-state-highlight{border:1px solid #fcefa1;background:#fbf9ee url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png?f7ccf) 50% 50% repeat-x;color:#363636}.ui-state-highlight a,.ui-widget-content .ui-state-highlight a,.ui-widget-header .ui-state-highlight a{color:#363636}.ui-state-error,.ui-widget-content .ui-state-error,.ui-widget-header .ui-state-error{border:1px solid #cd0a0a;background:#fef1ec url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_glass_95_fef1ec_1x400.png?f9aa8) 50% 50% repeat-x;color:#cd0a0a}.ui-state-error a,.ui-widget-content .ui-state-error a,.ui-widget-header .ui-state-error a{color:#cd0a0a}.ui-state-error-text,.ui-widget-content .ui-state-error-text,.ui-widget-header .ui-state-error-text{color:#cd0a0a}.ui-priority-primary,.ui-widget-content .ui-priority-primary,.ui-widget-header .ui-priority-primary{font-weight:bold}.ui-priority-secondary,.ui-widget-content .ui-priority-secondary,.ui-widget-header .ui-priority-secondary{opacity:.7;filter:Alpha(Opacity=70);font-weight:normal}.ui-state-disabled,.ui-widget-content .ui-state-disabled,.ui-widget-header .ui-state-disabled{opacity:.35;filter:Alpha(Opacity=35);background-image:none}.ui-state-disabled .ui-icon{filter:Alpha(Opacity=35)}   .ui-icon{width:16px;height:16px;background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_222222_256x240.png?a1b38)}.ui-widget-content .ui-icon{background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_222222_256x240.png?a1b38)}.ui-widget-header .ui-icon{background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_222222_256x240.png?a1b38)}.ui-state-default .ui-icon{background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_888888_256x240.png?302ae)}.ui-state-hover .ui-icon,.ui-state-focus .ui-icon{background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_454545_256x240.png?6b29e)}.ui-state-active .ui-icon{background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_454545_256x240.png?6b29e)}.ui-state-highlight .ui-icon{background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_2e83ff_256x240.png?764c3)}.ui-state-error .ui-icon,.ui-state-error-text .ui-icon{background-image:url(/resources/lib/jquery.ui/themes/smoothness/images/ui-icons_cd0a0a_256x240.png?5c785)} .ui-icon-carat-1-n{background-position:0 0}.ui-icon-carat-1-ne{background-position:-16px 0}.ui-icon-carat-1-e{background-position:-32px 0}.ui-icon-carat-1-se{background-position:-48px 0}.ui-icon-carat-1-s{background-position:-64px 0}.ui-icon-carat-1-sw{background-position:-80px 0}.ui-icon-carat-1-w{background-position:-96px 0}.ui-icon-carat-1-nw{background-position:-112px 0}.ui-icon-carat-2-n-s{background-position:-128px 0}.ui-icon-carat-2-e-w{background-position:-144px 0}.ui-icon-triangle-1-n{background-position:0 -16px}.ui-icon-triangle-1-ne{background-position:-16px -16px}.ui-icon-triangle-1-e{background-position:-32px -16px}.ui-icon-triangle-1-se{background-position:-48px -16px}.ui-icon-triangle-1-s{background-position:-64px -16px}.ui-icon-triangle-1-sw{background-position:-80px -16px}.ui-icon-triangle-1-w{background-position:-96px -16px}.ui-icon-triangle-1-nw{background-position:-112px -16px}.ui-icon-triangle-2-n-s{background-position:-128px -16px}.ui-icon-triangle-2-e-w{background-position:-144px -16px}.ui-icon-arrow-1-n{background-position:0 -32px}.ui-icon-arrow-1-ne{background-position:-16px -32px}.ui-icon-arrow-1-e{background-position:-32px -32px}.ui-icon-arrow-1-se{background-position:-48px -32px}.ui-icon-arrow-1-s{background-position:-64px -32px}.ui-icon-arrow-1-sw{background-position:-80px -32px}.ui-icon-arrow-1-w{background-position:-96px -32px}.ui-icon-arrow-1-nw{background-position:-112px -32px}.ui-icon-arrow-2-n-s{background-position:-128px -32px}.ui-icon-arrow-2-ne-sw{background-position:-144px -32px}.ui-icon-arrow-2-e-w{background-position:-160px -32px}.ui-icon-arrow-2-se-nw{background-position:-176px -32px}.ui-icon-arrowstop-1-n{background-position:-192px -32px}.ui-icon-arrowstop-1-e{background-position:-208px -32px}.ui-icon-arrowstop-1-s{background-position:-224px -32px}.ui-icon-arrowstop-1-w{background-position:-240px -32px}.ui-icon-arrowthick-1-n{background-position:0 -48px}.ui-icon-arrowthick-1-ne{background-position:-16px -48px}.ui-icon-arrowthick-1-e{background-position:-32px -48px}.ui-icon-arrowthick-1-se{background-position:-48px -48px}.ui-icon-arrowthick-1-s{background-position:-64px -48px}.ui-icon-arrowthick-1-sw{background-position:-80px -48px}.ui-icon-arrowthick-1-w{background-position:-96px -48px}.ui-icon-arrowthick-1-nw{background-position:-112px -48px}.ui-icon-arrowthick-2-n-s{background-position:-128px -48px}.ui-icon-arrowthick-2-ne-sw{background-position:-144px -48px}.ui-icon-arrowthick-2-e-w{background-position:-160px -48px}.ui-icon-arrowthick-2-se-nw{background-position:-176px -48px}.ui-icon-arrowthickstop-1-n{background-position:-192px -48px}.ui-icon-arrowthickstop-1-e{background-position:-208px -48px}.ui-icon-arrowthickstop-1-s{background-position:-224px -48px}.ui-icon-arrowthickstop-1-w{background-position:-240px -48px}.ui-icon-arrowreturnthick-1-w{background-position:0 -64px}.ui-icon-arrowreturnthick-1-n{background-position:-16px -64px}.ui-icon-arrowreturnthick-1-e{background-position:-32px -64px}.ui-icon-arrowreturnthick-1-s{background-position:-48px -64px}.ui-icon-arrowreturn-1-w{background-position:-64px -64px}.ui-icon-arrowreturn-1-n{background-position:-80px -64px}.ui-icon-arrowreturn-1-e{background-position:-96px -64px}.ui-icon-arrowreturn-1-s{background-position:-112px -64px}.ui-icon-arrowrefresh-1-w{background-position:-128px -64px}.ui-icon-arrowrefresh-1-n{background-position:-144px -64px}.ui-icon-arrowrefresh-1-e{background-position:-160px -64px}.ui-icon-arrowrefresh-1-s{background-position:-176px -64px}.ui-icon-arrow-4{background-position:0 -80px}.ui-icon-arrow-4-diag{background-position:-16px -80px}.ui-icon-extlink{background-position:-32px -80px}.ui-icon-newwin{background-position:-48px -80px}.ui-icon-refresh{background-position:-64px -80px}.ui-icon-shuffle{background-position:-80px -80px}.ui-icon-transfer-e-w{background-position:-96px -80px}.ui-icon-transferthick-e-w{background-position:-112px -80px}.ui-icon-folder-collapsed{background-position:0 -96px}.ui-icon-folder-open{background-position:-16px -96px}.ui-icon-document{background-position:-32px -96px}.ui-icon-document-b{background-position:-48px -96px}.ui-icon-note{background-position:-64px -96px}.ui-icon-mail-closed{background-position:-80px -96px}.ui-icon-mail-open{background-position:-96px -96px}.ui-icon-suitcase{background-position:-112px -96px}.ui-icon-comment{background-position:-128px -96px}.ui-icon-person{background-position:-144px -96px}.ui-icon-print{background-position:-160px -96px}.ui-icon-trash{background-position:-176px -96px}.ui-icon-locked{background-position:-192px -96px}.ui-icon-unlocked{background-position:-208px -96px}.ui-icon-bookmark{background-position:-224px -96px}.ui-icon-tag{background-position:-240px -96px}.ui-icon-home{background-position:0 -112px}.ui-icon-flag{background-position:-16px -112px}.ui-icon-calendar{background-position:-32px -112px}.ui-icon-cart{background-position:-48px -112px}.ui-icon-pencil{background-position:-64px -112px}.ui-icon-clock{background-position:-80px -112px}.ui-icon-disk{background-position:-96px -112px}.ui-icon-calculator{background-position:-112px -112px}.ui-icon-zoomin{background-position:-128px -112px}.ui-icon-zoomout{background-position:-144px -112px}.ui-icon-search{background-position:-160px -112px}.ui-icon-wrench{background-position:-176px -112px}.ui-icon-gear{background-position:-192px -112px}.ui-icon-heart{background-position:-208px -112px}.ui-icon-star{background-position:-224px -112px}.ui-icon-link{background-position:-240px -112px}.ui-icon-cancel{background-position:0 -128px}.ui-icon-plus{background-position:-16px -128px}.ui-icon-plusthick{background-position:-32px -128px}.ui-icon-minus{background-position:-48px -128px}.ui-icon-minusthick{background-position:-64px -128px}.ui-icon-close{background-position:-80px -128px}.ui-icon-closethick{background-position:-96px -128px}.ui-icon-key{background-position:-112px -128px}.ui-icon-lightbulb{background-position:-128px -128px}.ui-icon-scissors{background-position:-144px -128px}.ui-icon-clipboard{background-position:-160px -128px}.ui-icon-copy{background-position:-176px -128px}.ui-icon-contact{background-position:-192px -128px}.ui-icon-image{background-position:-208px -128px}.ui-icon-video{background-position:-224px -128px}.ui-icon-script{background-position:-240px -128px}.ui-icon-alert{background-position:0 -144px}.ui-icon-info{background-position:-16px -144px}.ui-icon-notice{background-position:-32px -144px}.ui-icon-help{background-position:-48px -144px}.ui-icon-check{background-position:-64px -144px}.ui-icon-bullet{background-position:-80px -144px}.ui-icon-radio-on{background-position:-96px -144px}.ui-icon-radio-off{background-position:-112px -144px}.ui-icon-pin-w{background-position:-128px -144px}.ui-icon-pin-s{background-position:-144px -144px}.ui-icon-play{background-position:0 -160px}.ui-icon-pause{background-position:-16px -160px}.ui-icon-seek-next{background-position:-32px -160px}.ui-icon-seek-prev{background-position:-48px -160px}.ui-icon-seek-end{background-position:-64px -160px}.ui-icon-seek-start{background-position:-80px -160px} .ui-icon-seek-first{background-position:-80px -160px}.ui-icon-stop{background-position:-96px -160px}.ui-icon-eject{background-position:-112px -160px}.ui-icon-volume-off{background-position:-128px -160px}.ui-icon-volume-on{background-position:-144px -160px}.ui-icon-power{background-position:0 -176px}.ui-icon-signal-diag{background-position:-16px -176px}.ui-icon-signal{background-position:-32px -176px}.ui-icon-battery-0{background-position:-48px -176px}.ui-icon-battery-1{background-position:-64px -176px}.ui-icon-battery-2{background-position:-80px -176px}.ui-icon-battery-3{background-position:-96px -176px}.ui-icon-circle-plus{background-position:0 -192px}.ui-icon-circle-minus{background-position:-16px -192px}.ui-icon-circle-close{background-position:-32px -192px}.ui-icon-circle-triangle-e{background-position:-48px -192px}.ui-icon-circle-triangle-s{background-position:-64px -192px}.ui-icon-circle-triangle-w{background-position:-80px -192px}.ui-icon-circle-triangle-n{background-position:-96px -192px}.ui-icon-circle-arrow-e{background-position:-112px -192px}.ui-icon-circle-arrow-s{background-position:-128px -192px}.ui-icon-circle-arrow-w{background-position:-144px -192px}.ui-icon-circle-arrow-n{background-position:-160px -192px}.ui-icon-circle-zoomin{background-position:-176px -192px}.ui-icon-circle-zoomout{background-position:-192px -192px}.ui-icon-circle-check{background-position:-208px -192px}.ui-icon-circlesmall-plus{background-position:0 -208px}.ui-icon-circlesmall-minus{background-position:-16px -208px}.ui-icon-circlesmall-close{background-position:-32px -208px}.ui-icon-squaresmall-plus{background-position:-48px -208px}.ui-icon-squaresmall-minus{background-position:-64px -208px}.ui-icon-squaresmall-close{background-position:-80px -208px}.ui-icon-grip-dotted-vertical{background-position:0 -224px}.ui-icon-grip-dotted-horizontal{background-position:-16px -224px}.ui-icon-grip-solid-vertical{background-position:-32px -224px}.ui-icon-grip-solid-horizontal{background-position:-48px -224px}.ui-icon-gripsmall-diagonal-se{background-position:-64px -224px}.ui-icon-grip-diagonal-se{background-position:-80px -224px}  .ui-corner-all,.ui-corner-top,.ui-corner-left,.ui-corner-tl{-moz-border-radius-topleft:4px;-webkit-border-top-left-radius:4px;-khtml-border-top-left-radius:4px;border-top-left-radius:4px}.ui-corner-all,.ui-corner-top,.ui-corner-right,.ui-corner-tr{-moz-border-radius-topright:4px;-webkit-border-top-right-radius:4px;-khtml-border-top-right-radius:4px;border-top-right-radius:4px}.ui-corner-all,.ui-corner-bottom,.ui-corner-left,.ui-corner-bl{-moz-border-radius-bottomleft:4px;-webkit-border-bottom-left-radius:4px;-khtml-border-bottom-left-radius:4px;border-bottom-left-radius:4px}.ui-corner-all,.ui-corner-bottom,.ui-corner-right,.ui-corner-br{-moz-border-radius-bottomright:4px;-webkit-border-bottom-right-radius:4px;-khtml-border-bottom-right-radius:4px;border-bottom-right-radius:4px} .ui-widget-overlay{background:#aaaaaa url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_flat_0_aaaaaa_40x100.png?fda5a) 50% 50% repeat-x;opacity:.3;filter:Alpha(Opacity=30)}.ui-widget-shadow{margin:-8px 0 0 -8px;padding:8px;background:#aaaaaa url(/resources/lib/jquery.ui/themes/smoothness/images/ui-bg_flat_0_aaaaaa_40x100.png?fda5a) 50% 50% repeat-x;opacity:.3;filter:Alpha(Opacity=30);-moz-border-radius:8px;-khtml-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}
+.mw-collapsible-toggle{float:right;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}  .mw-content-ltr .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr .mw-collapsible-toggle{float:right} .mw-content-rtl .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl .mw-collapsible-toggle{float:left}.mw-customtoggle,.mw-collapsible-toggle{cursor:pointer} caption .mw-collapsible-toggle,.mw-content-ltr caption .mw-collapsible-toggle,.mw-content-rtl caption .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr caption .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl caption .mw-collapsible-toggle{float:none} li .mw-collapsible-toggle,.mw-content-ltr li .mw-collapsible-toggle,.mw-content-rtl li .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr li .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl li .mw-collapsible-toggle{float:none} .mw-collapsible-toggle-li{list-style:none}
+.suggestions{overflow:hidden;position:absolute;top:0;left:0;width:0;border:none;z-index:1099;padding:0;margin:-1px 0 0 0}.suggestions-special{position:relative;background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0;margin-top:-2px;display:none;padding:0.25em 0.25em;line-height:1.25em}.suggestions-results{background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0}.suggestions-result{color:black;margin:0;line-height:1.5em;padding:0.01em 0.25em;text-align:left; overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}.suggestions-result-current{background-color:#4C59A6;color:white}.suggestions-special .special-label{color:gray;text-align:left}.suggestions-special .special-query{color:black;font-style:italic;text-align:left}.suggestions-special .special-hover{background-color:silver}.suggestions-result-current .special-label,.suggestions-result-current .special-query{color:white}.highlight{font-weight:bold}
+@media screen {
+	.tochidden,.toctoggle{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}.toctoggle{font-size:94%}}
+@media print {
+	#toc.tochidden,.toctoggle{display:none}}
+.hiddenStructure{display:none}.if{display:none} table.wikitable,table.prettytable{margin:1em 1em 1em 0;background:#f9f9f9;border:1px #aaaaaa solid;border-collapse:collapse}table.wikitable th,table.wikitable td,table.prettytable th,table.prettytable td{border:1px #aaaaaa solid;padding:0.2em}table.wikitable th,table.prettytable th{background:#f2f2f2;text-align:center}table.wikitable caption,table.prettytable caption{margin-left:inherit;margin-right:inherit}.allpagesredirect{font-style:italic} .infobox{border:1px solid #aaaaaa;background-color:#f9f9f9;color:black;margin-bottom:0.5em;margin-left:1em;padding:0.2em;float:right;clear:right}.infobox td,.infobox th{vertical-align:top}.infobox caption{font-size:larger;margin-left:inherit}.infobox.bordered{border-collapse:collapse}.infobox.bordered td,.infobox.bordered th{border:1px solid #aaaaaa}.infobox.bordered .borderless td,.infobox.bordered .borderless th{border:0}.infobox.sisterproject{width:20em;font-size:90%}table.collapsed tr.collapsible{display:none}.collapseButton{ float:right; font-weight:normal; text-align:right;width:auto} .navbar{display:inline;font-size:88%;font-weight:normal}.navbar ul{display:inline;white-space:nowrap}.navbar li{word-spacing:-0.125em} .navbox .navbar{display:block;font-size:100%}.navbox-title .navbar{ float:left; text-align:left; margin-right:0.5em;width:6em} .navbox{ border:1px solid #aaa;width:100%;margin:auto;clear:both;font-size:88%;text-align:center;padding:1px}.navbox-inner,.navbox-subgroup{width:100%}.navbox th,.navbox-title,.navbox-abovebelow{text-align:center; padding-left:1em;padding-right:1em}th.navbox-group{ white-space:nowrap; text-align:right}.navbox,.navbox-subgroup{background:#fdfdfd; }.navbox-list{border-color:#fdfdfd; }.navbox th,.navbox-title{background:#ccccff; }.navbox-abovebelow,th.navbox-group,.navbox-subgroup .navbox-title{background:#ddddff; }.navbox-subgroup .navbox-group,.navbox-subgroup .navbox-abovebelow{background:#e6e6ff; }.navbox-even{background:#f7f7f7; }.navbox-odd{background:transparent; }table.navbox + table.navbox{ margin-top:-1px; }.navbox .hlist td dl,.navbox .hlist td ol,.navbox .hlist td ul,.navbox td.hlist dl,.navbox td.hlist ol,.navbox td.hlist ul{padding:0.125em 0; }.navbox .hlist dd,.navbox .hlist dt,.navbox .hlist li{white-space:nowrap; white-space:normal !ie; }.navbox .hlist dd dl,.navbox .hlist dt dl,.navbox .hlist li ol,.navbox .hlist li ul{white-space:normal; }ol + table.navbox,ul + table.navbox{margin-top:0.5em; }body.page-Main_Page h1.firstHeading{display:none} body.page-Main_Page #p-actions{display:none !important} body.page-Main_Page #ca-talk{display:none !important} body.page-Main_Page #ca-view{display:none !important} body.page-Main_Page #ca-edit{display:none !important} body.page-Main_Page #ca-history{display:none !important} body.page-Main_Page #p-cactions{display:none !important} body.page-Main_Page #ca-nstab-main{display:none !important} body.page-Main_Page #ca-viewsource{display:none !important}  .category_link{v-align:top;display:inline-block;width:144px; }.category_link a{border:1px solid #333; color:#fff; background-color:#333; padding:2px;line-height:1;display:block}.category_link a:hover{border:1px solid #333; color:#333; background-color:#eee; }  .navigationBox{border:1px solid silver;margin:10px;width:100%;font-size:12px}.navigationBox .header{font-size:14px;text-align:center;background-color:#E0E9E9;padding:2px;border-bottom:1px solid #DDDDD}.navigationBox .header .left{float:left;font-size:10px;margin-left:5px;margin-top:3px}.navigationBox .header .right{float:right;font-size:10px;margin-right:5px;margin-top:3px}.navigationBox .category{background-color:#EDF2F2;width:129px;text-align:right;padding-right:8px}.navigationBox tr:nth-child(odd){background-color:#F4F7F7}.navigationBox .neighbors{border-top:1px solid silver;text-align:center;background-color:#F4F7F7;padding:2px}.navigationBox li{display:inline-block;margin:0}.navigationBox li:after{content:" · ";font-weight:bold;margin-left:5px;margin-right:5px}.navigationBox li:last-child:after{content:none}.navigationBox ul{margin:2px;padding:0px}.navigationBox .header abbr a{background:none !important;padding:0 !important;color:#002bb8 !important}.navigationBox .mw-collapsible-toggle{font-size:10px;margin-right:3px;margin-top:2px}   pre{overflow-x:auto} body{word-wrap:break-word} @media (max-width:767px){ #mw-panel{position:static !important} #left-navigation,#footer,#content{margin-left:0 !important} #left-navigation,#right-navigation  {float:none} #p-search{float:right !important} div#simpleSearch{width:8em}   }</style><style>
+.ve-activated #toc,.ve-activated #siteNotice,.ve-activated .mw-indicators, .ve-active #bodyContent > :not( #siteSub ):not( #contentSub ):not( .ve-ui-mwTocWidget ),.ve-activated #t-print,.ve-activated #t-permalink,.ve-activated #p-coll-print_export,.ve-activated #t-cite,.ve-deactivating .ve-ui-surface{display:none} .ve-activating .ve-ui-surface{height:0;overflow:hidden}.ve-activated #bodyContent,.ve-activated #firstHeading{opacity:0.6;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none} .ve-activated #content{position:relative}.ve-init-mw-desktopArticleTarget-loading-overlay{position:absolute;left:0;right:0;z-index:1;margin-top:-0.5em}.ve-init-mw-desktopArticleTarget-progress{height:1em;overflow:hidden;margin:0 25%}.ve-init-mw-desktopArticleTarget-progress-bar{height:1em;width:0} .mw-editsection{white-space:nowrap; unicode-bidi:-moz-isolate;unicode-bidi:-webkit-isolate;unicode-bidi:isolate}.mw-editsection-divider{color:#555} .ve-init-mw-desktopArticleTarget-progress{height:0.75em;border:1px solid #347bff;background:#fff;border-radius:2px;box-shadow:0 0.1em 0 0 rgba(0,0,0,0.15) }.ve-init-mw-desktopArticleTarget-progress-bar{height:0.75em;background:#347bff}
+.ui-helper-hidden{display:none}.ui-helper-hidden-accessible{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.ui-helper-reset{margin:0;padding:0;border:0;outline:0;line-height:1.3;text-decoration:none;font-size:100%;list-style:none}.ui-helper-clearfix:before,.ui-helper-clearfix:after{content:"";display:table;border-collapse:collapse}.ui-helper-clearfix:after{clear:both}.ui-helper-clearfix{zoom:1}.ui-helper-zfix{width:100%;height:100%;top:0;left:0;position:absolute;opacity:0;filter:Alpha(Opacity=0)} .ui-state-disabled{cursor:default !important}  .ui-icon{display:block;text-indent:-99999px;overflow:hidden;background-repeat:no-repeat}  .ui-widget-overlay{position:absolute;top:0;left:0;width:100%;height:100%}  .ui-widget{font-family:sans-serif;font-size:0.8em}.ui-widget .ui-widget{font-size:1em}.ui-widget input,.ui-widget select,.ui-widget textarea,.ui-widget button{font-family:sans-serif;font-size:1em}.ui-widget-content{border:1px solid #cccccc;background:#f2f5f7 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkEAIAAACY3hF0AAAAd0lEQVR4Ae1OJRYCARD9b04HB9i9AAfA8lZcCy4Fibhk3KlEroA7g5PQvuM+n7bN3W7fJlxJdu/cFEusCVlUMSS2IIEyQcNuThKrYESUILAEL7EIiX3EStbDSVBAz05i8dYTcHbPPQlBpAkWxFEi7vGIx39Akt0JDx8zhdonkHMAAAAASUVORK5CYII=) 50% top repeat-x;background:#f2f5f7 url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_highlight-hard_100_f2f5f7_1x100.png?c9d93) 50% top repeat-x!ie;color:#362b36}.ui-widget-header{border:1px solid #aed0ea;background:#ffffff url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkAQAAAABvV2fNAAAADElEQVR4AWNoGB4QAInlMgFKeRKBAAAAAElFTkSuQmCC) 50% 50% repeat-x;background:#ffffff url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_highlight-soft_100_ffffff_1x100.png?22887) 50% 50% repeat-x!ie;color:#222222;font-weight:bold} .ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default{border:1px solid #aed0ea;background:#d7ebf9 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkEAIAAACY3hF0AAAAfUlEQVR4AWN6Lfu1789dJgYwwEGNUv8fMHxg+M3EYM8wn+Ex0/+7//MZrjL9m/ffn+E00/9aBjuGo0z/Yv7r/z/E9C/2vx7DQab/tv/lGPYw/bP5Lw+kQIL/gYKxDCC5f3Mh+vb+j2e4wPT/HkM+wxWm//X/9/9/S4KTRikAkkU5P+PzOxYAAAAASUVORK5CYII=) 50% 50% repeat-x;background:#d7ebf9 url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_highlight-hard_80_d7ebf9_1x100.png?2e08b) 50% 50% repeat-x!ie;font-weight:normal;color:#2779aa}.ui-state-default a,.ui-state-default a:link,.ui-state-default a:visited{color:#2779aa;text-decoration:none}.ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover,.ui-state-focus,.ui-widget-content .ui-state-focus,.ui-widget-header .ui-state-focus{border:1px solid #74b2e2;background:#e4f1fb url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkEAIAAACY3hF0AAAAi0lEQVR4AWL6qv4r4V8KoP2pNlcYAIP3Xfv2SOZI5njsQcsCeBsGwHpYgA1ocHenQy6ekgXgdxcigK9RC1zxpNJoYe8ptbEjIi+FGtaEpYrmlA0HnrLgYEaZymFMGfAVjNAzkceIMpKcPPWnDPph+yxpsBUM+0cdayrwwrW7OIgyOjhTTXV1//jDT7kmSE5p9M0N4gAAAABJRU5ErkJggg==) 50% 50% repeat-x;background:#e4f1fb url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_highlight-soft_100_e4f1fb_1x100.png?60912) 50% 50% repeat-x!ie;font-weight:normal;color:#0070a3}.ui-state-hover a,.ui-state-hover a:hover,.ui-state-hover a:link,.ui-state-hover a:visited{color:#0070a3;text-decoration:none}.ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active{border:1px solid #cccccc;background:#f0f0f0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkEAAAAAAy19n/AAAAPElEQVR4AWP68IGJgWGAEaMNE0MnE+N0JoZlTIxHmRiPMDFeYWK8zMQAYW9jYlzGxNDBxBDNxMA/gO4EANN5C7vG98V+AAAAAElFTkSuQmCC) 50% 50% repeat-x;background:#f0f0f0 url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_inset-hard_100_f0f0f0_1x100.png?397c1) 50% 50% repeat-x!ie;font-weight:normal;color:#000000}.ui-state-active a,.ui-state-active a:link,.ui-state-active a:visited{color:#000000;text-decoration:none} .ui-state-highlight,.ui-widget-content .ui-state-highlight,.ui-widget-header .ui-state-highlight{border:1px solid #f9dd34;background:#ffef8f url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABkEAIAAACY3hF0AAAAZklEQVR4AWP6//9TxIJcJgYwGEHUH4bHIOrN/2IQ9ZqhGMH7/4IhHMR78t8KQlmDqMcQ3oP/chBKHkwxgHn3oYJg6j9U7s5/JjR9CMNeMIQh8V5DHAGx9v+H//0g3heG1Xj9MEoBABg9NcOxKunPAAAAAElFTkSuQmCC) 50% top repeat-x;background:#ffef8f url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_highlight-soft_25_ffef8f_1x100.png?d1872) 50% top repeat-x!ie;color:#363636}.ui-state-highlight a,.ui-widget-content .ui-state-highlight a,.ui-widget-header .ui-state-highlight a{color:#363636}.ui-state-error,.ui-widget-content .ui-state-error,.ui-widget-header .ui-state-error{border:1px solid #cd0a0a;background:#cd0a0a url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAABkAQMAAADOquA5AAAAA1BMVEXNCgokNzldAAAADklEQVR4AWOgARgFowAAAlgAAVzhuFIAAAAASUVORK5CYII=) 50% 50% repeat-x;background:#cd0a0a url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_flat_15_cd0a0a_40x100.png?161b7) 50% 50% repeat-x!ie;color:#ffffff}.ui-state-error a,.ui-widget-content .ui-state-error a,.ui-widget-header .ui-state-error a{color:#ffffff}.ui-state-error-text,.ui-widget-content .ui-state-error-text,.ui-widget-header .ui-state-error-text{color:#ffffff}.ui-priority-primary,.ui-widget-content .ui-priority-primary,.ui-widget-header .ui-priority-primary{font-weight:bold}.ui-priority-secondary,.ui-widget-content .ui-priority-secondary,.ui-widget-header .ui-priority-secondary{opacity:.7;filter:Alpha(Opacity=70);font-weight:normal}.ui-state-disabled,.ui-widget-content .ui-state-disabled,.ui-widget-header .ui-state-disabled{opacity:.35;filter:Alpha(Opacity=35);background-image:none}.ui-state-disabled .ui-icon{filter:Alpha(Opacity=35)}   .ui-icon{width:16px;height:16px}.ui-icon,.ui-widget-content .ui-icon,.ui-widget-header .ui-icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAADwCAMAAADYSUr5AAABDlBMVEVyp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp89yp8/KULUUAAAAWnRSTlMAGf8QMwQIUL+CmS8iVXFAZmAaEzLMDSE8FkJISyAeWiMnMVMshTSHgMNqyM/GOEUcvLi+fKu1pYyqqK0fsin9AZ5RJO8KBgIDj6JilEqgr23fnEdjP29/kWiyI5UtAAAM80lEQVR4Aezb3XLzOgiFYXh8//e8T8MwQeNJ8yXd5T2zF8RiCfm3jWVZvoGUf7x+X+6AfLnEUZRkCZYf7EBQAsgoEFVNilpJ2gFafgkmP9eBoM1R2cEwg0GM6WDqh5ryXur4hxIGPZFD9vTrDbIe8e2QY4FtCsF5DU0dMAygdsCn6EM8d/AQkBzsJUsw+XeuApHIGiz3RmhZlmVZluVP3Anmd92Igbojh4IAg1/z+4CkZqSQn3wjld2AFlC3kM/9St2AHB8eg/yn9ZOnEQ9yIge/Zj8bCMS/AjD3rCzi+X1ATn4W9YMdMJDe+T4gT0sw5F4FlmVZlmVZ/gTiFcBLv++zBQTmHWdxxr3jw/AD5gOcM6DKekhN17SCvmkcjfPx53oMcjg4xslAoYp127GDWoIq3jo+0PWyY5CBuYJz+hCibAM1gBoOxg4yWzS3MCd/e8Xm9HkA5yPcKu+4xmFqQdz7RRwbuoA754CjKl7EV+eDWJZlWZZl6SQZL8EPDwCiMGhADMxqcm8A0WCOqsB5AOpnJVmlETk9QItIs4H9KPPxiRgLKDjPINQPi2TVpg4iRwOS4/hbyOQAY/2aaM5HKP485Ii5g4Dw1GB9jzgPQFefOoyInt/1nt9l9AEPBaLq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);background-image:url(/skins/Vector/skinStyles/jquery.ui/images/ui-icons_72a7cf_256x240.png?0dade)!ie}.ui-state-default .ui-icon{background-image:url(data:image/png;base64,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);background-image:url(/skins/Vector/skinStyles/jquery.ui/images/ui-icons_3d80b3_256x240.png?24568)!ie}.ui-state-hover .ui-icon,.ui-state-focus .ui-icon{background-image:url(data:image/png;base64,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);background-image:url(/skins/Vector/skinStyles/jquery.ui/images/ui-icons_2694e8_256x240.png?cfbc7)!ie}.ui-state-active .ui-icon{background-image:url(data:image/png;base64,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);background-image:url(/skins/Vector/skinStyles/jquery.ui/images/ui-icons_666666_256x240.png?3f98c)!ie}.ui-state-highlight .ui-icon{background-image:url(data:image/png;base64,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);background-image:url(/skins/Vector/skinStyles/jquery.ui/images/ui-icons_2e83ff_256x240.png?548b5)!ie}.ui-state-error .ui-icon,.ui-state-error-text .ui-icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAADwCAMAAADYSUr5AAABDlBMVEX////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////uKVtWAAAAWnRSTlMAGf8QMwQIUL+CmS8iVXFAZmAaEzLMDSE8FkJISyAeWiMnMVMshTSHgMNqyM/GOEUcvLi+fKu1pYyqqK0fsin9AZ5RJO8KBgIDj6JilEqgr23fnEdjP29/kWiyI5UtAAAM80lEQVR4Aezb3XLzOgiFYXh8//e8T8MwQeNJ8yXd5T2zF8RiCfm3jWVZvoGUf7x+X+6AfLnEUZRkCZYf7EBQAsgoEFVNilpJ2gFafgkmP9eBoM1R2cEwg0GM6WDqh5ryXur4hxIGPZFD9vTrDbIe8e2QY4FtCsF5DU0dMAygdsCn6EM8d/AQkBzsJUsw+XeuApHIGiz3RmhZlmVZluVP3Anmd92Igbojh4IAg1/z+4CkZqSQn3wjld2AFlC3kM/9St2AHB8eg/yn9ZOnEQ9yIge/Zj8bCMS/AjD3rCzi+X1ATn4W9YMdMJDe+T4gT0sw5F4FlmVZlmVZ/gTiFcBLv++zBQTmHWdxxr3jw/AD5gOcM6DKekhN17SCvmkcjfPx53oMcjg4xslAoYp127GDWoIq3jo+0PWyY5CBuYJz+hCibAM1gBoOxg4yWzS3MCd/e8Xm9HkA5yPcKu+4xmFqQdz7RRwbuoA754CjKl7EV+eDWJZlWZZl6SQZL8EPDwCiMGhADMxqcm8A0WCOqsB5AOpnJVmlETk9QItIs4H9KPPxiRgLKDjPINQPi2TVpg4iRwOS4/hbyOQAY/2aaM5HKP485Ii5g4Dw1GB9jzgPQFefOoyInt/1nt9l9AEPBaLq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);background-image:url(/skins/Vector/skinStyles/jquery.ui/images/ui-icons_ffffff_256x240.png?bf272)!ie} .ui-icon-carat-1-n{background-position:0 0}.ui-icon-carat-1-ne{background-position:-16px 0}.ui-icon-carat-1-e{background-position:-32px 0}.ui-icon-carat-1-se{background-position:-48px 0}.ui-icon-carat-1-s{background-position:-64px 0}.ui-icon-carat-1-sw{background-position:-80px 0}.ui-icon-carat-1-w{background-position:-96px 0}.ui-icon-carat-1-nw{background-position:-112px 0}.ui-icon-carat-2-n-s{background-position:-128px 0}.ui-icon-carat-2-e-w{background-position:-144px 0}.ui-icon-triangle-1-n{background-position:0 -16px}.ui-icon-triangle-1-ne{background-position:-16px -16px}.ui-icon-triangle-1-e{background-position:-32px -16px}.ui-icon-triangle-1-se{background-position:-48px -16px}.ui-icon-triangle-1-s{background-position:-64px -16px}.ui-icon-triangle-1-sw{background-position:-80px -16px}.ui-icon-triangle-1-w{background-position:-96px -16px}.ui-icon-triangle-1-nw{background-position:-112px -16px}.ui-icon-triangle-2-n-s{background-position:-128px -16px}.ui-icon-triangle-2-e-w{background-position:-144px -16px}.ui-icon-arrow-1-n{background-position:0 -32px}.ui-icon-arrow-1-ne{background-position:-16px -32px}.ui-icon-arrow-1-e{background-position:-32px -32px}.ui-icon-arrow-1-se{background-position:-48px -32px}.ui-icon-arrow-1-s{background-position:-64px -32px}.ui-icon-arrow-1-sw{background-position:-80px -32px}.ui-icon-arrow-1-w{background-position:-96px -32px}.ui-icon-arrow-1-nw{background-position:-112px -32px}.ui-icon-arrow-2-n-s{background-position:-128px -32px}.ui-icon-arrow-2-ne-sw{background-position:-144px -32px}.ui-icon-arrow-2-e-w{background-position:-160px -32px}.ui-icon-arrow-2-se-nw{background-position:-176px -32px}.ui-icon-arrowstop-1-n{background-position:-192px -32px}.ui-icon-arrowstop-1-e{background-position:-208px -32px}.ui-icon-arrowstop-1-s{background-position:-224px -32px}.ui-icon-arrowstop-1-w{background-position:-240px -32px}.ui-icon-arrowthick-1-n{background-position:0 -48px}.ui-icon-arrowthick-1-ne{background-position:-16px -48px}.ui-icon-arrowthick-1-e{background-position:-32px -48px}.ui-icon-arrowthick-1-se{background-position:-48px -48px}.ui-icon-arrowthick-1-s{background-position:-64px -48px}.ui-icon-arrowthick-1-sw{background-position:-80px -48px}.ui-icon-arrowthick-1-w{background-position:-96px -48px}.ui-icon-arrowthick-1-nw{background-position:-112px -48px}.ui-icon-arrowthick-2-n-s{background-position:-128px -48px}.ui-icon-arrowthick-2-ne-sw{background-position:-144px -48px}.ui-icon-arrowthick-2-e-w{background-position:-160px -48px}.ui-icon-arrowthick-2-se-nw{background-position:-176px -48px}.ui-icon-arrowthickstop-1-n{background-position:-192px -48px}.ui-icon-arrowthickstop-1-e{background-position:-208px -48px}.ui-icon-arrowthickstop-1-s{background-position:-224px -48px}.ui-icon-arrowthickstop-1-w{background-position:-240px -48px}.ui-icon-arrowreturnthick-1-w{background-position:0 -64px}.ui-icon-arrowreturnthick-1-n{background-position:-16px -64px}.ui-icon-arrowreturnthick-1-e{background-position:-32px -64px}.ui-icon-arrowreturnthick-1-s{background-position:-48px -64px}.ui-icon-arrowreturn-1-w{background-position:-64px -64px}.ui-icon-arrowreturn-1-n{background-position:-80px -64px}.ui-icon-arrowreturn-1-e{background-position:-96px -64px}.ui-icon-arrowreturn-1-s{background-position:-112px -64px}.ui-icon-arrowrefresh-1-w{background-position:-128px -64px}.ui-icon-arrowrefresh-1-n{background-position:-144px -64px}.ui-icon-arrowrefresh-1-e{background-position:-160px -64px}.ui-icon-arrowrefresh-1-s{background-position:-176px -64px}.ui-icon-arrow-4{background-position:0 -80px}.ui-icon-arrow-4-diag{background-position:-16px -80px}.ui-icon-extlink{background-position:-32px -80px}.ui-icon-newwin{background-position:-48px -80px}.ui-icon-refresh{background-position:-64px -80px}.ui-icon-shuffle{background-position:-80px -80px}.ui-icon-transfer-e-w{background-position:-96px -80px}.ui-icon-transferthick-e-w{background-position:-112px -80px}.ui-icon-folder-collapsed{background-position:0 -96px}.ui-icon-folder-open{background-position:-16px -96px}.ui-icon-document{background-position:-32px -96px}.ui-icon-document-b{background-position:-48px -96px}.ui-icon-note{background-position:-64px -96px}.ui-icon-mail-closed{background-position:-80px -96px}.ui-icon-mail-open{background-position:-96px -96px}.ui-icon-suitcase{background-position:-112px -96px}.ui-icon-comment{background-position:-128px -96px}.ui-icon-person{background-position:-144px -96px}.ui-icon-print{background-position:-160px -96px}.ui-icon-trash{background-position:-176px -96px}.ui-icon-locked{background-position:-192px -96px}.ui-icon-unlocked{background-position:-208px -96px}.ui-icon-bookmark{background-position:-224px -96px}.ui-icon-tag{background-position:-240px -96px}.ui-icon-home{background-position:0 -112px}.ui-icon-flag{background-position:-16px -112px}.ui-icon-calendar{background-position:-32px -112px}.ui-icon-cart{background-position:-48px -112px}.ui-icon-pencil{background-position:-64px -112px}.ui-icon-clock{background-position:-80px -112px}.ui-icon-disk{background-position:-96px -112px}.ui-icon-calculator{background-position:-112px -112px}.ui-icon-zoomin{background-position:-128px -112px}.ui-icon-zoomout{background-position:-144px -112px}.ui-icon-search{background-position:-160px -112px}.ui-icon-wrench{background-position:-176px -112px}.ui-icon-gear{background-position:-192px -112px}.ui-icon-heart{background-position:-208px -112px}.ui-icon-star{background-position:-224px -112px}.ui-icon-link{background-position:-240px -112px}.ui-icon-cancel{background-position:0 -128px}.ui-icon-plus{background-position:-16px -128px}.ui-icon-plusthick{background-position:-32px -128px}.ui-icon-minus{background-position:-48px -128px}.ui-icon-minusthick{background-position:-64px -128px}.ui-icon-close{background-position:-80px -128px}.ui-icon-closethick{background-position:-96px -128px}.ui-icon-key{background-position:-112px -128px}.ui-icon-lightbulb{background-position:-128px -128px}.ui-icon-scissors{background-position:-144px -128px}.ui-icon-clipboard{background-position:-160px -128px}.ui-icon-copy{background-position:-176px -128px}.ui-icon-contact{background-position:-192px -128px}.ui-icon-image{background-position:-208px -128px}.ui-icon-video{background-position:-224px -128px}.ui-icon-script{background-position:-240px -128px}.ui-icon-alert{background-position:0 -144px}.ui-icon-info{background-position:-16px -144px}.ui-icon-notice{background-position:-32px -144px}.ui-icon-help{background-position:-48px -144px}.ui-icon-check{background-position:-64px -144px}.ui-icon-bullet{background-position:-80px -144px}.ui-icon-radio-on{background-position:-96px -144px}.ui-icon-radio-off{background-position:-112px -144px}.ui-icon-pin-w{background-position:-128px -144px}.ui-icon-pin-s{background-position:-144px -144px}.ui-icon-play{background-position:0 -160px}.ui-icon-pause{background-position:-16px -160px}.ui-icon-seek-next{background-position:-32px -160px}.ui-icon-seek-prev{background-position:-48px -160px}.ui-icon-seek-end{background-position:-64px -160px}.ui-icon-seek-start{background-position:-80px -160px} .ui-icon-seek-first{background-position:-80px -160px}.ui-icon-stop{background-position:-96px -160px}.ui-icon-eject{background-position:-112px -160px}.ui-icon-volume-off{background-position:-128px -160px}.ui-icon-volume-on{background-position:-144px -160px}.ui-icon-power{background-position:0 -176px}.ui-icon-signal-diag{background-position:-16px -176px}.ui-icon-signal{background-position:-32px -176px}.ui-icon-battery-0{background-position:-48px -176px}.ui-icon-battery-1{background-position:-64px -176px}.ui-icon-battery-2{background-position:-80px -176px}.ui-icon-battery-3{background-position:-96px -176px}.ui-icon-circle-plus{background-position:0 -192px}.ui-icon-circle-minus{background-position:-16px -192px}.ui-icon-circle-close{background-position:-32px -192px}.ui-icon-circle-triangle-e{background-position:-48px -192px}.ui-icon-circle-triangle-s{background-position:-64px -192px}.ui-icon-circle-triangle-w{background-position:-80px -192px}.ui-icon-circle-triangle-n{background-position:-96px -192px}.ui-icon-circle-arrow-e{background-position:-112px -192px}.ui-icon-circle-arrow-s{background-position:-128px -192px}.ui-icon-circle-arrow-w{background-position:-144px -192px}.ui-icon-circle-arrow-n{background-position:-160px -192px}.ui-icon-circle-zoomin{background-position:-176px -192px}.ui-icon-circle-zoomout{background-position:-192px -192px}.ui-icon-circle-check{background-position:-208px -192px}.ui-icon-circlesmall-plus{background-position:0 -208px}.ui-icon-circlesmall-minus{background-position:-16px -208px}.ui-icon-circlesmall-close{background-position:-32px -208px}.ui-icon-squaresmall-plus{background-position:-48px -208px}.ui-icon-squaresmall-minus{background-position:-64px -208px}.ui-icon-squaresmall-close{background-position:-80px -208px}.ui-icon-grip-dotted-vertical{background-position:0 -224px}.ui-icon-grip-dotted-horizontal{background-position:-16px -224px}.ui-icon-grip-solid-vertical{background-position:-32px -224px}.ui-icon-grip-solid-horizontal{background-position:-48px -224px}.ui-icon-gripsmall-diagonal-se{background-position:-64px -224px}.ui-icon-grip-diagonal-se{background-position:-80px -224px}  .ui-corner-all,.ui-corner-top,.ui-corner-left,.ui-corner-tl{-moz-border-radius-topleft:3px;-webkit-border-top-left-radius:3px;-khtml-border-top-left-radius:3px;border-top-left-radius:3px}.ui-corner-all,.ui-corner-top,.ui-corner-right,.ui-corner-tr{-moz-border-radius-topright:3px;-webkit-border-top-right-radius:3px;-khtml-border-top-right-radius:3px;border-top-right-radius:3px}.ui-corner-all,.ui-corner-bottom,.ui-corner-left,.ui-corner-bl{-moz-border-radius-bottomleft:3px;-webkit-border-bottom-left-radius:3px;-khtml-border-bottom-left-radius:3px;border-bottom-left-radius:3px}.ui-corner-all,.ui-corner-bottom,.ui-corner-right,.ui-corner-br{-moz-border-radius-bottomright:3px;-webkit-border-bottom-right-radius:3px;-khtml-border-bottom-right-radius:3px;border-bottom-right-radius:3px} .ui-widget-overlay{background:#000000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAABkAQAAAADcH0/XAAAADklEQVR4AWOgARgFowAAAlgAAVzhuFIAAAAASUVORK5CYII=) 50% 50% repeat-x;background:#000000 url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_flat_100_000000_40x100.png?05c35) 50% 50% repeat-x!ie;opacity:.5;filter:Alpha(Opacity=50)}.ui-widget-shadow{margin:-7px 0 0 -7px;padding:7px;background:#000000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAABkAQAAAADcH0/XAAAADklEQVR4AWOgARgFowAAAlgAAVzhuFIAAAAASUVORK5CYII=) 50% 50% repeat-x;background:#000000 url(/skins/Vector/skinStyles/jquery.ui/images/ui-bg_flat_70_000000_40x100.png?05c35) 50% 50% repeat-x!ie;opacity:.2;filter:Alpha(Opacity=20);-moz-border-radius:8px;-khtml-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}
+.suggestions a.mw-searchSuggest-link,.suggestions a.mw-searchSuggest-link:hover,.suggestions a.mw-searchSuggest-link:active,.suggestions a.mw-searchSuggest-link:focus{color:black;text-decoration:none}.suggestions-result-current a.mw-searchSuggest-link,.suggestions-result-current a.mw-searchSuggest-link:hover,.suggestions-result-current a.mw-searchSuggest-link:active,.suggestions-result-current a.mw-searchSuggest-link:focus{color:white}.suggestions a.mw-searchSuggest-link .special-query{ overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}</style><style>
+.ui-tabs{position:relative;padding:.2em;zoom:1} .ui-tabs .ui-tabs-nav{margin:0;padding:.2em .2em 0}.ui-tabs .ui-tabs-nav li{list-style:none;float:left;position:relative;top:0;margin:1px .2em 0 0;border-bottom:0;padding:0;white-space:nowrap}.ui-tabs .ui-tabs-nav li a{float:left;padding:.5em 1em;text-decoration:none}.ui-tabs .ui-tabs-nav li.ui-tabs-active{margin-bottom:-1px;padding-bottom:1px}.ui-tabs .ui-tabs-nav li.ui-tabs-active a,.ui-tabs .ui-tabs-nav li.ui-state-disabled a,.ui-tabs .ui-tabs-nav li.ui-tabs-loading a{cursor:text}.ui-tabs .ui-tabs-nav li a,.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a{cursor:pointer} .ui-tabs .ui-tabs-panel{display:block;border-width:0;padding:1em 1.4em;background:none}</style><meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/load_002.css">
+<script async="" src="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/load.php"></script>
+<meta name="generator" content="MediaWiki 1.27.2">
+<link rel="shortcut icon" href="https://www.owasp.org/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="https://www.owasp.org/opensearch_desc.php" title="OWASP (en)">
+<link rel="EditURI" type="application/rsd+xml" href="https://www.owasp.org/api.php?action=rsd">
+<link rel="copyright" href="https://creativecommons.org/licenses/by-sa/4.0/">
+<link rel="alternate" type="application/atom+xml" title="OWASP Atom feed" href="https://www.owasp.org/index.php?title=Special:RecentChanges&amp;feed=atom">
+<script src="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/load_002.php"></script></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Clickjacking_Defense_Cheat_Sheet rootpage-Clickjacking_Defense_Cheat_Sheet skin-vector action-view">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="en">Clickjacking Defense Cheat Sheet</h1>
+									<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">From OWASP</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-head">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="en"><div style="width:100%;height:160px;border:0,margin:0;overflow: hidden;"><img alt="Cheatsheets-header.jpg" src="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/Cheatsheets-header.jpg" width="2400" height="160"></div>
+<p><br>Last revision (mm/dd/yy): <b>08/17/2016</b> 
+</p>
+<h1><span class="mw-headline" id="Introduction">Introduction</span></h1>
+ <div id="toc" class="toc"><div id="toctitle"><h2></h2><span class="toctoggle">&nbsp;[<a href="#" id="togglelink">hide</a>]&nbsp;</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Defending_with_Content_Security_Policy_frame-ancestors_directive"><span class="tocnumber">2</span> <span class="toctext">Defending with Content Security Policy frame-ancestors directive</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Limitations"><span class="tocnumber">2.1</span> <span class="toctext">Limitations</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#Defending_with_X-Frame-Options_Response_Headers"><span class="tocnumber">3</span> <span class="toctext">Defending with X-Frame-Options Response Headers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#X-Frame-Options_Header_Types"><span class="tocnumber">3.1</span> <span class="toctext">X-Frame-Options Header Types</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Browser_Support"><span class="tocnumber">3.2</span> <span class="toctext">Browser Support</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Implementation"><span class="tocnumber">3.3</span> <span class="toctext">Implementation</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Common_Defense_Mistakes"><span class="tocnumber">3.4</span> <span class="toctext">Common Defense Mistakes</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Limitations_2"><span class="tocnumber">3.5</span> <span class="toctext">Limitations</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Best-for-now_Legacy_Browser_Frame_Breaking_Script"><span class="tocnumber">4</span> <span class="toctext">Best-for-now Legacy Browser Frame Breaking Script</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#window.confirm.28.29_Protection"><span class="tocnumber">5</span> <span class="toctext">window.confirm() Protection</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Insecure_Non-Working_Scripts_DO_NOT_USE"><span class="tocnumber">6</span> <span class="toctext">Insecure Non-Working Scripts DO NOT USE</span></a>
+<ul>
+<li class="toclevel-2 tocsection-13"><a href="#Double_Framing"><span class="tocnumber">6.1</span> <span class="toctext">Double Framing</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#The_onBeforeUnload_Event"><span class="tocnumber">6.2</span> <span class="toctext">The onBeforeUnload Event</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#No-Content_Flushing"><span class="tocnumber">6.3</span> <span class="toctext">No-Content Flushing</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Exploiting_XSS_filters"><span class="tocnumber">6.4</span> <span class="toctext">Exploiting XSS filters</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#Clobbering_top.location"><span class="tocnumber">6.5</span> <span class="toctext">Clobbering top.location</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#Restricted_zones"><span class="tocnumber">6.6</span> <span class="toctext">Restricted zones</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="#Other_Cheatsheets"><span class="tocnumber">6.7</span> <span class="toctext">Other Cheatsheets</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p>This cheat sheet is focused on providing developer guidance on <a href="https://www.owasp.org/index.php/Clickjacking" title="Clickjacking">Clickjack/UI Redress</a> attack prevention.
+</p><p>The most popular way to defend against Clickjacking is to include
+ some sort of "frame-breaking" functionality which prevents other web 
+pages from framing the site you wish to defend. This cheat sheet will 
+discuss two methods of implementing frame-breaking: first is 
+X-Frame-Options headers (used if the browser supports the 
+functionality); and second is javascript frame-breaking code.
+</p>
+<h1><span class="mw-headline" id="Defending_with_Content_Security_Policy_frame-ancestors_directive">Defending with Content Security Policy frame-ancestors directive</span></h1>
+<p>The frame-ancestors directive can be used in a 
+Content-Security-Policy HTTP response header to indicate whether or not a
+ browser should be allowed to render a page in a &lt;frame&gt; or 
+&lt;iframe&gt;. Sites can use this to avoid Clickjacking attacks, by 
+ensuring that their content is not embedded into other sites.
+</p><p>frame-ancestors allows a site to authorize multiple domains using the normal Content Security Policy semantics.
+</p><p>See <a rel="nofollow" class="external free" href="https://w3c.github.io/webappsec-csp/document/#directive-frame-ancestors">https://w3c.github.io/webappsec-csp/document/#directive-frame-ancestors</a> for further details
+</p><p><br>
+</p>
+<h3><span class="mw-headline" id="Limitations">Limitations</span></h3>
+<ul><li> <b>Browser support:</b> frame-ancestors is not supported by all the major browsers yet.</li>
+<li> <b>X-Frame-Options takes priority:</b> <a rel="nofollow" class="external text" href="https://w3c.github.io/webappsec/specs/content-security-policy/#frame-ancestors-and-frame-options">Section 7.7.1 of the CSP Spec</a>
+ says X-Frame-Options should be ignored if frame-ancestors is specified,
+ but Chrome 40 &amp; Firefox 35 ignore the frame-ancestors directive and
+ follow the X-Frame-Options header instead.</li></ul>
+<h1><span class="mw-headline" id="Defending_with_X-Frame-Options_Response_Headers">Defending with X-Frame-Options Response Headers</span></h1>
+<p>The X-Frame-Options HTTP response header can be used to indicate 
+whether or not a browser should be allowed to render a page in a 
+&lt;frame&gt; or &lt;iframe&gt;. Sites can use this to avoid 
+Clickjacking attacks, by ensuring that their content is not embedded 
+into other sites. Set the X-Frame-Options header for all responses 
+containing HTML content. The possible values are "DENY", "SAMEORIGIN", 
+or "ALLOW-FROM uri"
+</p>
+<h3><span class="mw-headline" id="X-Frame-Options_Header_Types">X-Frame-Options Header Types</span></h3>
+<p>There are three possible values for the X-Frame-Options header:
+</p>
+<ul><li> <b>DENY</b>, which prevents any domain from framing the 
+content. The "DENY" setting is recommended unless a specific need has 
+been identified for framing.</li>
+<li> <b>SAMEORIGIN</b>, which only allows the current site to frame the content.</li>
+<li> <b>ALLOW-FROM uri</b>, which permits the specified 'uri' to frame this page. (e.g., ALLOW-FROM http://www.example.com) <b>Check Limitations Below</b> this will fail open if the browser does not support it. Other browsers support the new <a href="https://www.owasp.org/index.php/Content_Security_Policy_Cheat_Sheet#Preventing_Clickjacking" title="Content Security Policy Cheat Sheet">CSP frame-ancestors directive</a> instead. A few support both.</li></ul>
+<h3><span class="mw-headline" id="Browser_Support">Browser Support</span></h3>
+<p>The following browsers support X-Frame-Options headers.
+</p>
+<table border="1">
+<tbody><tr> <th>Browser</th> <th>DENY/SAMEORIGIN Support Introduced</th> <th>ALLOW-FROM Support Introduced</th></tr>
+<tr> <td>Chrome</td> <td><a rel="nofollow" class="external text" href="http://blog.chromium.org/2010/01/security-in-depth-new-security-features.html">4.1.249.1042</a></td>
+<td><a rel="nofollow" class="external text" href="https://code.google.com/p/chromium/issues/detail?id=129139">Won't support</a> - <a href="https://www.owasp.org/index.php/Content_Security_Policy_Cheat_Sheet#Preventing_Clickjacking" title="Content Security Policy Cheat Sheet">Supports CSP frame-ancestors instead</a></td> </tr>
+<tr> <td>Firefox (Gecko)</td> <td><a rel="nofollow" class="external text" href="https://developer.mozilla.org/en-US/docs/HTTP/X-Frame-Options?redirectlocale=en-US&amp;redirectslug=The_X-FRAME-OPTIONS_response_header">3.6.9 (1.9.2.9)</a></td> <td><a rel="nofollow" class="external text" href="https://bugzilla.mozilla.org/show_bug.cgi?id=690168">18.0</a></td></tr>
+<tr> <td>Internet Explorer</td> <td><a rel="nofollow" class="external text" href="http://blogs.msdn.com/b/ie/archive/2009/01/27/ie8-security-part-vii-clickjacking-defenses.aspx">8.0</a></td> <td><a rel="nofollow" class="external text" href="http://erlend.oftedal.no/blog/tools/xframeoptions/">9.0</a></td> </tr>
+<tr> <td>Opera</td> <td><a rel="nofollow" class="external text" href="http://www.opera.com/docs/specs/presto26/#network">10.50</a></td> <td></td> </tr>
+<tr> <td>Safari</td> <td><a rel="nofollow" class="external text" href="http://www.zdnet.com/blog/security/apple-safari-jumbo-patch-50-vulnerabilities-fixed/3541">4.0</a></td><td><a rel="nofollow" class="external text" href="https://bugs.webkit.org/show_bug.cgi?id=94836">Won't support</a> - <a href="https://www.owasp.org/index.php/Content_Security_Policy_Cheat_Sheet#Preventing_Clickjacking" title="Content Security Policy Cheat Sheet">Supports CSP frame-ancestors instead</a></td> </tr>
+</tbody></table>
+<p>References: 
+</p>
+<ul><li> <a rel="nofollow" class="external text" href="https://developer.mozilla.org/en-US/docs/HTTP/X-Frame-Options">Mozilla Developer Network</a><br></li>
+<li> <a rel="nofollow" class="external text" href="http://datatracker.ietf.org/doc/draft-ietf-websec-x-frame-options/">IETF Draft</a></li>
+<li> <a rel="nofollow" class="external text" href="http://erlend.oftedal.no/blog/tools/xframeoptions/">X-Frame-Options Compatibility Test</a> - Check this for the LATEST browser support info for the X-Frame-Options header</li></ul>
+<h3><span class="mw-headline" id="Implementation">Implementation</span></h3>
+<p>To implement this protection, you need to add the X-Frame-Options 
+HTTP Response header to any page that you want to protect from being 
+clickjacked via framebusting. One way to do this is to add the HTTP 
+Response Header manually to every page.  A possibly simpler way is to 
+implement a filter that automatically adds the header to every page.
+</p><p>OWASP has an <a href="https://www.owasp.org/index.php/ClickjackFilter_for_Java_EE" title="ClickjackFilter for Java EE" class="mw-redirect">article and some code</a> that provides all the details for implementing this in a Java EE environment.
+</p><p>The SDL blog has posted an <a rel="nofollow" class="external text" href="http://blogs.msdn.com/sdl/archive/2009/02/05/clickjacking-defense-in-ie8.aspx">article</a> covering how to implement this in a .NET environment.
+</p>
+<h3><span class="mw-headline" id="Common_Defense_Mistakes">Common Defense Mistakes</span></h3>
+<p>Meta-tags that attempt to apply the X-Frame-Options directive DO NOT 
+WORK. For example, &lt;meta http-equiv="X-Frame-Options" 
+content="deny"&gt;) will not work. You must apply the X-FRAME-OPTIONS 
+directive as HTTP Response Header as described above.
+</p>
+<h3><span class="mw-headline" id="Limitations_2">Limitations</span></h3>
+<ul><li> <b>Per-page policy specification</b> The policy needs to be 
+specified for every page, which can complicate deployment. Providing the
+ ability to enforce it for the entire site, at login time for instance, 
+could simplify adoption.</li>
+<li> <b>Problems with multi-domain sites</b> The current implementation 
+does not allow the webmaster to provide a whitelist of domains that are 
+allowed to frame the page. While whitelisting can be dangerous, in some 
+cases a webmaster might have no choice but to use more than one 
+hostname.</li>
+<li> <b>ALLOW-FROM browser support</b> The ALLOW-FROM option is a 
+relatively recent addition (circa 2012) and may not be supported by all 
+browsers yet.  BE CAREFUL ABOUT DEPENDING ON ALLOW-FROM. If you apply it
+ and the browser does not support it, then you will have NO clickjacking
+ defense in place.</li>
+<li> <b>Multiple options not supported</b> There is no way to allow the 
+current site and a 3rd party site to frame the same response -- browsers
+ only honour one X-Frame-Options header and only one value on that 
+header.</li>
+<li> <b>Nested Frames don't work with SAMEORIGIN and ALLOW-FROM</b> In the following situation, the <a rel="nofollow" class="external free" href="http://framed.invalid/child">http://framed.invalid/child</a>
+ frame does not load because ALLOW-FROM applies to the top-level 
+browsing context, not that of the immediate parent. The solution is to 
+use ALLOW-FROM in both the parent and child frames (but this prevents 
+the child frame loading if the //framed.invalid/parent page is loaded as
+ the top level document).</li></ul>
+<pre>+-//friendlysite.invalid-----------------------+
+|                                              |
+| +-//framed.invalid/parent------------------+ |
+| |                                          | |
+| | ALLOW-FROM <a rel="nofollow" class="external free" href="http://friendlysite.invalid/">http://friendlysite.invalid</a> | |
+| |                                          | |
+| | +-//framed.invalid/child--------+        | |
+| | |                               |        | |
+| | | SAMEORIGIN                    |        | |
+| | |                               |        | |
+| | +-------------------------------+        | |
+| +------------------------------------------+ |
++----------------------------------------------+
+</pre>
+<ul><li> <b>X-Frame-Options Deprecated</b> While the X-Frame-Options 
+header is supported by the major browsers, it was never standardized and
+ has been deprecated in favour of the frame-ancestors directive from the
+ CSP Level 2 specification.</li>
+<li> <b>Proxies</b> Web proxies are notorious for adding and stripping 
+headers. If a web proxy strips the X-Frame-Options header then the site 
+loses its framing protection.</li></ul>
+<h1><span class="mw-headline" id="Best-for-now_Legacy_Browser_Frame_Breaking_Script">Best-for-now Legacy Browser Frame Breaking Script</span></h1>
+<p>One way to defend against clickjacking is to include a "frame-breaker" script
+in each page that should not be framed. The following methodology will prevent
+a webpage from being framed even in legacy browsers, that do not support the
+X-Frame-Options-Header.
+</p><p>In the document HEAD element, add the following:
+</p><p>First apply an ID to the style element itself:
+</p>
+<pre>&lt;style id="antiClickjack"&gt;body{display:none !important;}&lt;/style&gt;
+</pre>
+<p>And then delete that style by its ID immediately after in the script:
+</p>
+<pre>&lt;script type="text/javascript"&gt;
+   if (self === top) {
+       var antiClickjack = document.getElementById("antiClickjack");
+       antiClickjack.parentNode.removeChild(antiClickjack);
+   } else {
+       top.location = self.location;
+   }
+&lt;/script&gt;
+</pre>
+<p>This way, everything can be in the document HEAD and you only need one method/taglib in your API.
+</p><p>Reference: <a rel="nofollow" class="external free" href="https://www.codemagi.com/blog/post/194">https://www.codemagi.com/blog/post/194</a>
+</p>
+<h1><span class="mw-headline" id="window.confirm.28.29_Protection">window.confirm() Protection</span></h1>
+<p>The use of x-frame-options or a frame-breaking script is a more 
+fail-safe method of clickjacking protection.  However, in scenarios 
+where content must be frameable, then a window.confirm() can be used to 
+help mitigate Clickjacking by informing the user of the action they are 
+about to perform.
+</p><p>Invoking window.confirm() will display a popup that cannot be 
+framed.  If the window.confirm() originates from within an iframe with a
+ different domain than the parent, then the dialog box will display what
+ domain the window.confirm() originated from.  In this scenario the 
+browser is displaying the origin of the dialog box to help mitigate 
+Clickjacking attacks.  It should be noted that Internet Explorer is the 
+only known browser that does not display the domain that the 
+window.confirm() dialog box originated from,  to address this issue with
+ Internet Explorer insure that the message within the dialog box 
+contains contextual information about the type of action being 
+performed.  For example:
+</p>
+<pre>&lt;script type="text/javascript"&gt;
+   var action_confirm = window.confirm("Are you sure you want to delete your youtube account?")
+   if (action_confirm) {
+       //... perform action
+   } else {
+       //...  The user does not want to perform the requested action.
+   }
+&lt;/script&gt;
+</pre>
+<h1><span class="mw-headline" id="Insecure_Non-Working_Scripts_DO_NOT_USE">Insecure Non-Working Scripts DO NOT USE</span></h1>
+<p>Consider the following snippet which is <b>NOT recommended</b> for defending
+against clickjacking:
+</p>
+<pre>&lt;script&gt;if (top!=self) top.location.href=self.location.href&lt;/script&gt;</pre>
+<p>This simple frame breaking script attempts to prevent the page from 
+being incorporated into a frame or iframe by forcing the parent window 
+to load the current frame's URL. Unfortunately, multiple ways of 
+defeating this type of script have been made public. We outline some 
+here.
+</p>
+<h2><span class="mw-headline" id="Double_Framing">Double Framing</span></h2>
+<p>Some frame busting techniques navigate to the correct page by 
+assigning a value to parent.location. This works well if the victim page
+ is framed by a single page. However, if the attacker encloses the 
+victim in one frame inside another (a double frame), then accessing 
+parent.location becomes a security violation in all popular browsers, 
+due to the <b>descendant frame navigation policy</b>. This security violation disables the counter-action navigation.
+</p><p><b>Victim frame busting code:</b>
+</p>
+<pre>if(top.location!=self.locaton) {
+  parent.location = self.location;
+}
+</pre>
+<p><b>Attacker top frame:</b>
+</p>
+<pre>&lt;iframe src="attacker2.html"&gt;
+</pre>
+<p><b>Attacker sub-frame:</b>
+</p>
+<pre>&lt;iframe src="http://www.victim.com"&gt;
+</pre>
+<h2><span class="mw-headline" id="The_onBeforeUnload_Event">The onBeforeUnload Event</span></h2>
+<p>A user can manually cancel any navigation request submitted by a 
+framed page. To exploit this, the framing page registers an 
+onBeforeUnload handler which is called whenever the framing page is 
+about to be unloaded due to navigation. The handler function returns a 
+string that becomes part of a prompt displayed to the user. Say the 
+attacker wants to frame PayPal. He registers an unload handler function 
+that returns the string "Do you want to exit PayPal?". When this string 
+is displayed to the user is likely to cancel the navigation, defeating 
+PayPal's frame busting attempt.
+</p><p>The attacker mounts this attack by registering an unload event on the top page using the
+following code:
+</p>
+<pre>&lt;script&gt;
+window.onbeforeunload = function()
+{
+  return "Asking the user nicely";
+}
+&lt;/script&gt;
+&lt;iframe src="http://www.paypal.com"&gt;
+</pre>
+<p>PayPal's frame busting code will generate a BeforeUnload event 
+activating our function and prompting the user to cancel the navigation 
+event.
+</p>
+<h2><span class="mw-headline" id="No-Content_Flushing">No-Content Flushing</span></h2>
+<p>While the previous attack requires user interaction, the same attack 
+can be done without prompting the user. Most browsers (IE7, IE8, Google 
+Chrome, and Firefox) enable an attacker to automatically cancel the 
+incoming navigation request in an onBeforeUnload event handler by 
+repeatedly submitting a navigation request to a site responding with 
+\204 - No Content." Navigating to a No Content site is effectively a 
+NOP, but flushes the request pipeline, thus canceling the original 
+navigation request. Here is sample code to do this:
+</p>
+<pre>var preventbust = 0
+window.onbeforeunload = function() { killbust++ }
+setInterval( function() {
+  if(killbust &gt; 0){
+  killbust = 2;
+  window.top.location = 'http://nocontent204.com'
+  }
+}, 1);
+&lt;iframe src="http://www.victim.com"&gt;
+</pre>
+<h2><span class="mw-headline" id="Exploiting_XSS_filters">Exploiting XSS filters</span></h2>
+<p>IE8 and Google Chrome introduced reflective XSS filters that help 
+protect web pages from certain types of XSS attacks. Nava and Lindsay 
+(at Blackhat) observed that these filters can be used to circumvent 
+frame busting code. The IE8 XSS filter compares given request parameters
+ to a set of regular expressions in order to look for obvious attempts 
+at cross-site scripting. Using "induced false positives", the filter can
+ be used to disable selected scripts. By matching the beginning of any 
+script tag in the request parameters, the XSS filter will disable all 
+inline scripts within the page, including frame busting scripts. 
+External scripts can also be targeted by matching an external include, 
+effectively disabling all external scripts. Since subsets of the 
+JavaScript loaded is still functional (inline or external) and cookies 
+are still available, this attack is effective for clickjacking.
+</p><p><b>Victim frame busting code:</b>
+</p>
+<pre>&lt;script&gt;
+if(top&nbsp;!= self) {
+  top.location = self.location;
+}
+&lt;/script&gt;
+</pre>
+<p><b>Attacker:</b>
+</p>
+<pre>&lt;iframe src="http://www.victim.com/?v=&lt;script&gt;if''&gt;
+</pre>
+<p>The XSS filter will match that parameter "&lt;script&gt;if" to the 
+beginning of the frame busting script on the victim and will 
+consequently disable all inline scripts in the victim's page, including 
+the frame busting script. The XSSAuditor filter available for Google 
+Chrome enables the same exploit.
+</p>
+<h2><span class="mw-headline" id="Clobbering_top.location">Clobbering top.location</span></h2>
+<p>Several modern browsers treat the location variable as a special 
+immutable attribute across all contexts. However, this is not the case 
+in IE7 and Safari 4.0.4 where the location variable can be redefined.
+</p><p><b>IE7</b>
+Once the framing page redefines location, any frame busting code in a 
+subframe that tries to read top.location will commit a security 
+violation by trying to read a local variable in another domain. 
+Similarly, any attempt to navigate by assigning top.location will fail.
+</p><p><b>Victim frame busting code:</b>
+</p>
+<pre>if(top.location&nbsp;!= self.location) {
+  top.location = self.location;
+}
+</pre>
+<p><b>Attacker:</b>
+</p>
+<pre>&lt;script&gt; var location = "clobbered";
+&lt;/script&gt;
+&lt;iframe src="http://www.victim.com"&gt;
+&lt;/iframe&gt;
+</pre>
+<p><b>Safari 4.0.4</b>
+</p><p>We observed that although location is kept immutable in most 
+circumstances, when a custom location setter is defined via defineSetter
+ (through window) the object location becomes undefined. The framing 
+page simply does:
+</p>
+<pre>&lt;script&gt;
+  window.defineSetter("location" , function(){});
+&lt;/script&gt;
+</pre>
+<p>Now any attempt to read or navigate the top frame's location will fail.
+</p>
+<h2><span class="mw-headline" id="Restricted_zones">Restricted zones</span></h2>
+<p>Most frame busting relies on JavaScript in the framed page to detect 
+framing and bust itself out. If JavaScript is disabled in the context of
+ the subframe, the frame busting code will not run. There are 
+unfortunately several ways of restricting JavaScript in a subframe:
+</p>
+<ul><li> <b>In IE 8:</b> <pre>&lt;iframe src="http://www.victim.com" security="restricted"&gt;&lt;/iframe&gt;</pre></li>
+<li> <b>In Chrome:</b> <pre>&lt;iframe src="http://www.victim.com" sandbox&gt;&lt;/iframe&gt;</pre></li>
+<li><b> In Firefox and IE:</b> Activate designMode in parent page.</li></ul>
+<h2><span class="mw-headline" id="Other_Cheatsheets">Other Cheatsheets</span></h2>
+<table class="navigationBox mw-collapsible">
+
+<tbody><tr>
+<td colspan="2" class="header"><span class="mw-collapsible-toggle"><span class="mw-collapsible-bracket">[</span><a href="#">Collapse</a><span class="mw-collapsible-bracket">]</span></span> <span class="left"><abbr title="View this template"><strong class="selflink">V</strong></abbr> - <abbr title="Discuss this template"><strong class="selflink">T</strong></abbr> - <abbr title="Edit this template"><a rel="nofollow" class="external text" href="https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;action=edit">E</a><abbr title="Edit this template"></abbr></abbr></span> <b><a href="https://www.owasp.org/index.php/Cheat_Sheets" title="Cheat Sheets" class="mw-redirect">Cheat Sheets</a></b>
+</td></tr>
+<tr>
+<td class="category"> <b>Developer / Builder</b>
+</td>
+<td class="links">
+<ul><li> <a href="https://www.owasp.org/index.php/3rd_Party_Javascript_Management_Cheat_Sheet" title="3rd Party Javascript Management Cheat Sheet">3rd Party Javascript Management</a></li>
+<li> <a href="https://www.owasp.org/index.php/Access_Control_Cheat_Sheet" title="Access Control Cheat Sheet">Access Control</a></li>
+<li> <a href="https://www.owasp.org/index.php/AJAX_Security_Cheat_Sheet" title="AJAX Security Cheat Sheet">AJAX Security Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/Authentication_Cheat_Sheet" title="Authentication Cheat Sheet">Authentication</a> (<a href="https://www.owasp.org/index.php/Authentication_Cheat_Sheet_Espa%C3%B1ol" title="Authentication Cheat Sheet Español">ES</a>)</li>
+<li> <a href="https://www.owasp.org/index.php/Bean_Validation_Cheat_Sheet" title="Bean Validation Cheat Sheet">Bean Validation Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/Choosing_and_Using_Security_Questions_Cheat_Sheet" title="Choosing and Using Security Questions Cheat Sheet">Choosing and Using Security Questions</a></li>
+<li> <strong class="selflink">Clickjacking Defense</strong></li>
+<li> <a href="https://www.owasp.org/index.php/C-Based_Toolchain_Hardening_Cheat_Sheet" title="C-Based Toolchain Hardening Cheat Sheet">C-Based Toolchain Hardening</a></li>
+<li> <a href="https://www.owasp.org/index.php/Credential_Stuffing_Prevention_Cheat_Sheet" title="Credential Stuffing Prevention Cheat Sheet">Credential Stuffing Prevention Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29_Prevention_Cheat_Sheet" title="Cross-Site Request Forgery (CSRF) Prevention Cheat Sheet">Cross-Site Request Forgery (CSRF) Prevention</a></li>
+<li> <a href="https://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet" title="Cryptographic Storage Cheat Sheet">Cryptographic Storage</a></li>
+<li> <a href="https://www.owasp.org/index.php/Deserialization_Cheat_Sheet" title="Deserialization Cheat Sheet">Deserialization</a></li>
+<li> <a href="https://www.owasp.org/index.php/DOM_based_XSS_Prevention_Cheat_Sheet" title="DOM based XSS Prevention Cheat Sheet">DOM based XSS Prevention</a></li>
+<li> <a href="https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet" title="Forgot Password Cheat Sheet">Forgot Password</a></li>
+<li> <a href="https://www.owasp.org/index.php/HTML5_Security_Cheat_Sheet" title="HTML5 Security Cheat Sheet">HTML5 Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/HTTP_Strict_Transport_Security_Cheat_Sheet" title="HTTP Strict Transport Security Cheat Sheet">HTTP Strict Transport Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/Injection_Prevention_Cheat_Sheet" title="Injection Prevention Cheat Sheet">Injection Prevention Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/Injection_Prevention_Cheat_Sheet_in_Java" title="Injection Prevention Cheat Sheet in Java">Injection Prevention Cheat Sheet in Java</a></li>
+<li> <a href="https://www.owasp.org/index.php/JSON_Web_Token_%28JWT%29_Cheat_Sheet_for_Java" title="JSON Web Token (JWT) Cheat Sheet for Java">JSON Web Token (JWT) Cheat Sheet for Java</a></li>
+<li> <a href="https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet" title="Input Validation Cheat Sheet">Input Validation</a></li>
+<li> <a href="https://www.owasp.org/index.php/JAAS_Cheat_Sheet" title="JAAS Cheat Sheet">JAAS</a></li>
+<li> <a href="https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet" title="LDAP Injection Prevention Cheat Sheet">LDAP Injection Prevention</a></li>
+<li> <a href="https://www.owasp.org/index.php/Logging_Cheat_Sheet" title="Logging Cheat Sheet">Logging</a></li>
+<li> <a href="https://www.owasp.org/index.php/Mass_Assignment_Cheat_Sheet" title="Mass Assignment Cheat Sheet">Mass Assignment Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/.NET_Security_Cheat_Sheet" title=".NET Security Cheat Sheet">.NET Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet" title="OWASP Top Ten Cheat Sheet">OWASP Top Ten</a></li>
+<li> <a href="https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet" title="Password Storage Cheat Sheet">Password Storage</a></li>
+<li> <a href="https://www.owasp.org/index.php/Pinning_Cheat_Sheet" title="Pinning Cheat Sheet">Pinning</a></li>
+<li> <a href="https://www.owasp.org/index.php/Query_Parameterization_Cheat_Sheet" title="Query Parameterization Cheat Sheet">Query Parameterization</a></li>
+<li> <a href="https://www.owasp.org/index.php/Ruby_on_Rails_Cheatsheet" title="Ruby on Rails Cheatsheet">Ruby on Rails</a></li>
+<li> <a href="https://www.owasp.org/index.php/REST_Security_Cheat_Sheet" title="REST Security Cheat Sheet">REST Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/Session_Management_Cheat_Sheet" title="Session Management Cheat Sheet">Session Management</a></li>
+<li> <a href="https://www.owasp.org/index.php/SAML_Security_Cheat_Sheet" title="SAML Security Cheat Sheet">SAML Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet" title="SQL Injection Prevention Cheat Sheet">SQL Injection Prevention</a></li>
+<li> <a href="https://www.owasp.org/index.php/Transaction_Authorization_Cheat_Sheet" title="Transaction Authorization Cheat Sheet">Transaction Authorization</a></li>
+<li> <a href="https://www.owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet" title="Transport Layer Protection Cheat Sheet">Transport Layer Protection</a></li>
+<li> <a href="https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet" title="Unvalidated Redirects and Forwards Cheat Sheet">Unvalidated Redirects and Forwards</a></li>
+<li> <a href="https://www.owasp.org/index.php/User_Privacy_Protection_Cheat_Sheet" title="User Privacy Protection Cheat Sheet">User Privacy Protection</a></li>
+<li> <a href="https://www.owasp.org/index.php/Web_Service_Security_Cheat_Sheet" title="Web Service Security Cheat Sheet">Web Service Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet" title="XSS (Cross Site Scripting) Prevention Cheat Sheet">XSS (Cross Site Scripting) Prevention</a></li>
+<li> <a href="https://www.owasp.org/index.php/XML_External_Entity_%28XXE%29_Prevention_Cheat_Sheet" title="XML External Entity (XXE) Prevention Cheat Sheet">XML External Entity (XXE) Prevention Cheat Sheet</a></li></ul>
+</td></tr>
+<tr>
+<td class="category"> <b>Assessment / Breaker</b>
+</td>
+<td class="links">
+<ul><li> <a href="https://www.owasp.org/index.php/Attack_Surface_Analysis_Cheat_Sheet" title="Attack Surface Analysis Cheat Sheet">Attack Surface Analysis</a></li>
+<li> <a href="https://www.owasp.org/index.php/REST_Assessment_Cheat_Sheet" title="REST Assessment Cheat Sheet">REST Assessment</a></li>
+<li> <a href="https://www.owasp.org/index.php/Web_Application_Security_Testing_Cheat_Sheet" title="Web Application Security Testing Cheat Sheet">Web Application Security Testing</a></li>
+<li> <a href="https://www.owasp.org/index.php/XML_Security_Cheat_Sheet" title="XML Security Cheat Sheet">XML Security Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet" title="XSS Filter Evasion Cheat Sheet">XSS Filter Evasion</a></li></ul>
+</td></tr>
+<tr>
+<td class="category"> <b>Mobile</b>
+</td>
+<td class="links">
+<ul><li> <a href="https://www.owasp.org/index.php/Android_Testing_Cheat_Sheet" title="Android Testing Cheat Sheet">Android Testing</a></li>
+<li> <a href="https://www.owasp.org/index.php/IOS_Developer_Cheat_Sheet" title="IOS Developer Cheat Sheet">IOS Developer</a></li>
+<li> <a href="https://www.owasp.org/index.php/Mobile_Jailbreaking_Cheat_Sheet" title="Mobile Jailbreaking Cheat Sheet">Mobile Jailbreaking</a></li></ul>
+</td></tr>
+<tr>
+<td class="category"> <b>OpSec / Defender</b>
+</td>
+<td class="links">
+<ul><li> <a href="https://www.owasp.org/index.php/Virtual_Patching_Cheat_Sheet" title="Virtual Patching Cheat Sheet">Virtual Patching</a></li></ul>
+</td></tr>
+<tr>
+<td class="category"> <b>Draft and Beta</b>
+</td>
+<td class="links">
+<ul><li> <a href="https://www.owasp.org/index.php/Application_Security_Architecture_Cheat_Sheet" title="Application Security Architecture Cheat Sheet">Application Security Architecture</a></li>
+<li> <a href="https://www.owasp.org/index.php/Business_Logic_Security_Cheat_Sheet" title="Business Logic Security Cheat Sheet">Business Logic Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/Command_Injection_Defense_Cheat_Sheet" title="Command Injection Defense Cheat Sheet">Command Injection Defense Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/Content_Security_Policy_Cheat_Sheet" title="Content Security Policy Cheat Sheet">Content Security Policy</a></li>
+<li> <a href="https://www.owasp.org/index.php/Denial_of_Service_Cheat_Sheet" title="Denial of Service Cheat Sheet">Denial of Service Cheat Sheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/Grails_Secure_Code_Review_Cheat_Sheet" title="Grails Secure Code Review Cheat Sheet">Grails Secure Code Review</a></li>
+<li> <a href="https://www.owasp.org/index.php/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet" title="Insecure Direct Object Reference Prevention Cheat Sheet">Insecure Direct Object Reference Prevention</a></li>
+<li> <a href="https://www.owasp.org/index.php/IOS_Application_Security_Testing_Cheat_Sheet" title="IOS Application Security Testing Cheat Sheet">IOS Application Security Testing</a></li>
+<li> <a href="https://www.owasp.org/index.php/Key_Management_Cheat_Sheet" title="Key Management Cheat Sheet">Key Management</a></li>
+<li> <a href="https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet" title="PHP Security Cheat Sheet">PHP Security</a></li>
+<li> <a href="https://www.owasp.org/index.php/Regular_Expression_Security_Cheatsheet" title="Regular Expression Security Cheatsheet">Regular Expression Security Cheatsheet</a></li>
+<li> <a href="https://www.owasp.org/index.php/Secure_Coding_Cheat_Sheet" title="Secure Coding Cheat Sheet">Secure Coding</a></li>
+<li> <a href="https://www.owasp.org/index.php/Secure_SDLC_Cheat_Sheet" title="Secure SDLC Cheat Sheet">Secure SDLC</a></li>
+<li> <a href="https://www.owasp.org/index.php/Threat_Modeling_Cheat_Sheet" title="Threat Modeling Cheat Sheet">Threat Modeling</a></li></ul>
+</td></tr>
+<tr>
+<td colspan="2" class="neighbors"> <a href="https://www.owasp.org/index.php/Category:Cheatsheets" title="Category:Cheatsheets">All Pages In This Category</a>
+</td></tr></tbody></table>
+
+<!-- 
+NewPP limit report
+Cached time: 20170515175948
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.036 seconds
+Real time usage: 0.051 seconds
+Preprocessor visited node count: 272/1000000
+Preprocessor generated node count: 572/1000000
+Post‐expand include size: 9282/2097152 bytes
+Template argument size: 3933/2097152 bytes
+Highest expansion depth: 4/40
+Expensive parser function count: 0/100
+-->
+
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%   16.730      1 - -total
+ 77.67%   12.995      1 - Template:Cheatsheet_Navigation_Body
+ 18.02%    3.015      1 - Template:NavigationBoxBegin
+ 17.69%    2.960      5 - Template:NavigationBoxRow
+ 15.50%    2.593      1 - Template:NavigationBoxEnd
+ 13.13%    2.197      1 - Template:TOC_hidden
+-->
+
+<!-- Saved in parser cache with key wiki:pcache:idhash:28193-0!*!0!!en!5!* and timestamp 20170515175948 and revision id 220436
+ -->
+</div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;oldid=220436">https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;oldid=220436</a>"					</div>
+				<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="https://www.owasp.org/index.php/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="https://www.owasp.org/index.php/Category:Cheatsheets" title="Category:Cheatsheets">Cheatsheets</a></li></ul></div></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Personal tools</h3>
+						<ul>
+							<li id="pt-login"><a href="https://www.owasp.org/index.php?title=Special:UserLogin&amp;returnto=Clickjacking+Defense+Cheat+Sheet" title="You are encouraged to log in; however, it is not mandatory [Alt+Shift+o]" accesskey="o">Log in</a></li><li id="pt-createaccount"><a href="https://www.owasp.org/index.php/Special:RequestAccount" title="You are encouraged to create an account and log in; however, it is not mandatory">Request account</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Namespaces</h3>
+						<ul>
+															<li id="ca-nstab-main" class="selected"><span><a href="https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet" title="View the content page [Alt+Shift+c]" accesskey="c">Page</a></span></li>
+															<li id="ca-talk"><span><a href="https://www.owasp.org/index.php/Talk:Clickjacking_Defense_Cheat_Sheet" title="Discussion about the content page [Alt+Shift+t]" accesskey="t" rel="discussion">Discussion</a></span></li>
+													</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 id="p-variants-label" tabindex="0">
+							<span>Variants</span><a href="#" tabindex="-1"></a>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Views</h3>
+						<ul>
+															<li id="ca-view" class="selected"><span><a href="https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet">Read</a></span></li>
+															<li id="ca-viewsource"><span><a href="https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;action=edit" title="This page is protected.
+You can view its source [Alt+Shift+e]" accesskey="e">View source</a></span></li>
+															<li id="ca-history" class="collapsible"><span><a href="https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;action=history" title="Past revisions of this page [Alt+Shift+h]" accesskey="h">View history</a></span></li>
+													</ul>
+					</div>
+										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label" style="">
+						<h3 id="p-cactions-label" tabindex="0"><span>More</span><a href="#" tabindex="-1"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/index.php" id="searchform">
+							<div id="simpleSearch">
+							<input name="search" placeholder="Search" title="Search OWASP [Alt+Shift+f]" accesskey="f" id="searchInput" tabindex="1" autocomplete="off" type="search"><input value="Special:Search" name="title" type="hidden"><input name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton" type="submit">							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="https://www.owasp.org/index.php/Main_Page" title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" id="p-Navigation" aria-labelledby="p-Navigation-label">
+			<h3 id="p-Navigation-label">Navigation</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-Home"><a href="https://www.owasp.org/index.php/Main_Page">Home</a></li><li id="n-About-OWASP"><a href="https://www.owasp.org/index.php/About_OWASP">About OWASP</a></li><li id="n-Acknowledgements"><a href="https://www.owasp.org/index.php/Acknowledgements" rel="nofollow">Acknowledgements</a></li><li id="n-Advertising"><a href="https://www.owasp.org/index.php/Advertising" rel="nofollow">Advertising</a></li><li id="n-AppSec-Events"><a href="https://www.owasp.org/index.php/Category:OWASP_AppSec_Conference">AppSec Events</a></li><li id="n-Books"><a href="http://stores.lulu.com/owasp" rel="nofollow">Books</a></li><li id="n-Brand-Resources"><a href="https://www.owasp.org/index.php/Marketing/Resources" rel="nofollow">Brand Resources</a></li><li id="n-Chapters"><a href="https://www.owasp.org/index.php/OWASP_Chapter" rel="nofollow">Chapters</a></li><li id="n-Donate-to-OWASP"><a href="https://www.owasp.org/index.php/Donate" rel="nofollow">Donate to OWASP</a></li><li id="n-Downloads"><a href="https://www.owasp.org/index.php/Category:OWASP_Download">Downloads</a></li><li id="n-Funding"><a href="https://www.owasp.org/index.php/Funding" rel="nofollow">Funding</a></li><li id="n-Governance"><a href="https://www.owasp.org/index.php/Governance" rel="nofollow">Governance</a></li><li id="n-Initiatives"><a href="https://www.owasp.org/index.php/OWASP_Initiatives_Global_Strategic_Focus" rel="nofollow">Initiatives</a></li><li id="n-Mailing-Lists"><a href="http://lists.owasp.org/mailman/listinfo" rel="nofollow">Mailing Lists</a></li><li id="n-Membership"><a href="https://www.owasp.org/index.php/Membership">Membership</a></li><li id="n-Merchandise"><a href="https://www.owasp.org/index.php/OWASP_Merchandise" rel="nofollow">Merchandise</a></li><li id="n-News"><a href="https://www.owasp.org/index.php/Application_Security_News">News</a></li><li id="n-Portal"><a href="https://www.owasp.org/index.php/Portal" rel="nofollow" title="About the project, what you can do, where to find things">Community portal</a></li><li id="n-Presentations"><a href="https://www.owasp.org/index.php/Category:OWASP_Presentations">Presentations</a></li><li id="n-Press"><a href="https://www.owasp.org/index.php/Press" rel="nofollow">Press</a></li><li id="n-Projects"><a href="https://www.owasp.org/index.php/Category:OWASP_Project">Projects</a></li><li id="n-Video"><a href="https://www.owasp.org/index.php/Category:OWASP_Video">Video</a></li><li id="n-Volunteer"><a href="http://owasp.force.com/volunteers/GW_Volunteers__VolunteersJobListing" rel="nofollow">Volunteer</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-Reference" aria-labelledby="p-Reference-label">
+			<h3 id="p-Reference-label">Reference</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-Activities"><a href="https://www.owasp.org/index.php/Category:Activity">Activities</a></li><li id="n-Attacks"><a href="https://www.owasp.org/index.php/Category:Attack">Attacks</a></li><li id="n-Code-Snippets"><a href="https://www.owasp.org/index.php/Category:Code_Snippet">Code Snippets</a></li><li id="n-Controls"><a href="https://www.owasp.org/index.php/Category:Control">Controls</a></li><li id="n-Glossary"><a href="https://www.owasp.org/index.php/Category:Glossary">Glossary</a></li><li id="n-How-To..."><a href="https://www.owasp.org/index.php/Category:How_To">How To...</a></li><li id="n-Java-Project"><a href="https://www.owasp.org/index.php/Category:OWASP_Java_Project">Java Project</a></li><li id="n-.NET-Project"><a href="https://www.owasp.org/index.php/Category:OWASP_.NET_Project">.NET Project</a></li><li id="n-Principles"><a href="https://www.owasp.org/index.php/Category:Principle">Principles</a></li><li id="n-Technologies"><a href="https://www.owasp.org/index.php/Category:Technology">Technologies</a></li><li id="n-Threat-Agents"><a href="https://www.owasp.org/index.php/Category:Threat_Agent">Threat Agents</a></li><li id="n-Vulnerabilities"><a href="https://www.owasp.org/index.php/Category:Vulnerability">Vulnerabilities</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-tb" aria-labelledby="p-tb-label">
+			<h3 id="p-tb-label">Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li id="t-whatlinkshere"><a href="https://www.owasp.org/index.php/Special:WhatLinksHere/Clickjacking_Defense_Cheat_Sheet" title="A list of all wiki pages that link here [Alt+Shift+j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="https://www.owasp.org/index.php/Special:RecentChangesLinked/Clickjacking_Defense_Cheat_Sheet" title="Recent changes in pages linked from this page [Alt+Shift+k]" accesskey="k">Related changes</a></li><li id="t-specialpages"><a href="https://www.owasp.org/index.php/Special:SpecialPages" title="A list of all special pages [Alt+Shift+q]" accesskey="q">Special pages</a></li><li id="t-print"><a href="https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;printable=yes" rel="alternate" title="Printable version of this page [Alt+Shift+p]" accesskey="p">Printable version</a></li><li id="t-permalink"><a href="https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;oldid=220436" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="https://www.owasp.org/index.php?title=Clickjacking_Defense_Cheat_Sheet&amp;action=info" title="More information about this page">Page information</a></li>					</ul>
+							</div>
+		</div>
+				</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 17 August 2016, at 10:13.</li>
+											<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike</a> unless otherwise noted.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="https://www.owasp.org/index.php/OWASP:Privacy_policy" title="OWASP:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="https://www.owasp.org/index.php/OWASP:About" title="OWASP:About">About OWASP</a></li>
+											<li id="footer-places-disclaimer"><a href="https://www.owasp.org/index.php/OWASP:General_disclaimer" title="OWASP:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+											<li id="footer-copyrightico">
+							<a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/cc-by-sa.png" alt="Creative Commons Attribution-ShareAlike" width="88" height="31"></a>						</li>
+											<li id="footer-poweredbyico">
+							<a href="https://www.mediawiki.org/"><img src="Clickjacking%20Defense%20Cheat%20Sheet%20-%20OWASP_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/resources/assets/poweredby_mediawiki_132x47.png 1.5x, /resources/assets/poweredby_mediawiki_176x62.png 2x" width="88" height="31"></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.loader.state({"user":"ready","user.groups":"ready"});mw.loader.load(["mediawiki.toc","mediawiki.action.view.postEdit","site","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.searchSuggest","ext.headertabs","ext.visualEditor.targetLoader"]);});</script><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-4531126-1', 'auto');
+  ga('set', 'anonymizeIp', true);
+  ga('send', 'pageview');
+
+</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":104});});</script>
+	
+
+<a accesskey="v" href="https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet?veaction=edit" style="display: none;"></a><div style="display: none; font-size: 13px;" class="suggestions"><div class="suggestions-results"></div><div class="suggestions-special"></div></div></body></html>

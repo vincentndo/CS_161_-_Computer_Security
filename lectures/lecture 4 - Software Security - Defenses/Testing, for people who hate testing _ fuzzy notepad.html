@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Testing, for people who hate&nbsp;testing / fuzzy notepad</title>
+    <meta name="author" content="Eevee">
+
+    <link href="https://eev.ee/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="fuzzy notepad Atom Feed">
+
+        
+<script async="" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/analytics.js"></script><script src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/jquery.js"></script>
+<script src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/jquery_002.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $('article').each(function(index, article) {
+            console.log(index, article);
+            $(article).find('a.photo').colorbox({
+                fixed: true,
+                maxWidth: '100%',
+                maxHeight: '100%',
+                rel: 'colorbox' + String(index + 1)
+            });
+        });
+    });
+</script>
+
+
+    <!-- http://t.co/dKP3o1e -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://eev.ee/favicon.png" rel="icon">
+    <link href="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/all.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+    <link href="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/css.css" rel="stylesheet" type="text/css">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://eev.ee/theme/images/home-eevee.png">
+    <meta name="twitter:site" content="@eevee">
+    <meta name="twitter:title" content="Testing, for people who hate&nbsp;testing">
+    <meta name="twitter:description" content="I love having&nbsp;tests. I hate writing&nbsp;them. It’s tedious. It’s boring. It’s hard, sometimes harder than writing the code. Worst of all, it doesn’t feel like it accomplishes&nbsp;anything. So I usually don’t do it. I know, I know. I should do it. I should also get more exercise and eat more&nbsp;vegetables. The funny thing is, the only time I see anyone really praise the benefits of testing is when someone who’s really into testing extols the virtues of test-driven development. To me, that’s like trying to get me to eat my veggies by telling me how great veganism is. If I don’t want to do it at all, trying to sell me on an entire lifestyle is not going to work. I need something a little more practical, like “make smoothies” or “technically, chips are a&nbsp;vegetable”. Here’s the best way I’ve found to make test smoothies. I’ll even deliberately avoid any testing jargon, since no one can agree on what any of it means anyway.">
+<script type="text/javascript" async="" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/embed.js" data-timestamp="1494895591749"></script><link rel="prefetch" href="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/a_data/lounge.css"><link rel="prefetch" href="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/a_data/common.js"><link rel="prefetch" href="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/a_data/lounge_002.js"><link rel="prefetch" href="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/a_data/config.js"></head>
+
+<body>
+    <header role="banner">
+        <h1><a href="https://eev.ee/">fuzzy notepad</a></h1>
+        <nav role="navigation"></nav>
+    </header>
+    <div id="main">
+        <div id="content">
+    <article class="single" role="article">
+        <header>
+            <p class="meta"><time datetime="2016-08-22T08:49:00-07:00" pubdate="">Mon Aug 22, 2016</time>
+</p>
+            <h1>
+                <a href="https://eev.ee/blog/2016/08/22/testing-for-people-who-hate-testing/">
+                    <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-blog.png" alt="[blog]">
+
+                    Testing, for people who hate&nbsp;testing
+                </a>
+            </h1>
+        </header>
+
+        <div class="entry-content">
+            
+            <p>I <em>love</em> having&nbsp;tests.</p>
+<p>I <em>hate</em> writing&nbsp;them.</p>
+<p>It’s tedious.  It’s boring.  It’s hard, sometimes harder than writing
+ the code.  Worst of all, it doesn’t feel like it 
+accomplishes&nbsp;anything.</p>
+<p>So I usually don’t do it.  I know, I know.  I <em>should</em> do it.  I should also get more exercise and eat more&nbsp;vegetables.</p>
+<p>The funny thing is, the only time I see anyone really praise the benefits of testing is when someone who’s <em>really into</em>
+ testing extols the virtues of test-driven development.  To me, that’s 
+like trying to get me to eat my veggies by telling me how great veganism
+ is.  If I don’t want to do it at all, trying to sell me on an entire 
+lifestyle is not going to work.  I need something a little more 
+practical, like “make smoothies” or “technically, chips are 
+a&nbsp;vegetable”.</p>
+<p>Here’s the best way I’ve found to make test smoothies.  I’ll even deliberately avoid any testing jargon, since <a href="https://eev.ee/blog/2016/07/26/the-hardest-problem-in-computer-science/">no one can agree on what any of it means anyway</a>.</p>
+
+
+<h2 id="hating-testing-less"><a class="toclink" href="#hating-testing-less">Hating testing&nbsp;less</a></h2>
+<h3 id="love-your-test-harness"><a class="toclink" href="#love-your-test-harness">Love your test&nbsp;harness</a></h3>
+<p>Your test harness is the framework that finds your tests, runs your tests, and (in theory) helps you write&nbsp;tests.</p>
+<p>If you hate your test harness, you will never enjoy writing tests.  
+It’ll always be a slog, and you’ll avoid it whenever you can.  Shop 
+around and see if you can find something more&nbsp;palatable.</p>
+<p>For example, Python’s standard solution is the stdlib <a href="https://docs.python.org/3/library/unittest.html"><code>unittest</code> module</a>.  It’s a Java-inspired monstrosity that has you write nonsense like&nbsp;this:</p>
+<table class="highlighttable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="kn">from</span> <span class="nn">mymodule</span> <span class="kn">import</span> <span class="n">whatever</span>
+
+<span class="k">class</span> <span class="nc">TestWhatever</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_whatever</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">whatever</span><span class="p">(),</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">})</span>
+</pre></div>
+</td></tr></tbody></table>
+
+<p>It drives me up the wall that half of this trivial test is weird boilerplate.  The class itself is <a href="https://eev.ee/blog/2013/03/03/the-controller-pattern-is-awful-and-other-oo-heresy/">meaningless</a>, and the thing I really want to test is obscured behind one of several dozen <code>assert*</code> methods.</p>
+<p>These are minor gripes, but minor gripes make a big difference when 
+they apply to every single test — and when I have to force myself to 
+write tests in the first place.  (Maybe they don’t bother you, in which 
+case, keep using <code>unittest</code>!)  So I use <a href="http://docs.pytest.org/en/latest/"><code>py.test</code></a>&nbsp;instead:</p>
+<table class="highlighttable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mymodule</span> <span class="kn">import</span> <span class="n">whatever</span>
+
+<span class="k">def</span> <span class="nf">test_whatever</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">whatever</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+</pre></div>
+</td></tr></tbody></table>
+
+<p>If the test fails, you still get useful output, including diffs of strings or&nbsp;sequences:</p>
+<table class="highlighttable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    def test_whatever():
+&gt;       assert whatever() in {1, 2, 3}
+E       assert 4 in set([1, 2, 3])
+E        +  where 4 = whatever()
+</pre></div>
+</td></tr></tbody></table>
+
+<p>You really, really don’t want to know how this works.  It <em>does</em> work, and that’s all I care&nbsp;about.</p>
+<p><code>py.test</code> also has some bells and whistles like the ability to show locals when a test fails, hooks for writing your own custom <code>assert</code>s,
+ and bunches of other hooks and plugins.  But the most important thing 
+to me is that it minimizes the friction involve in writing tests to as 
+little as possible.  I can pretty much copy/paste whatever I did in the <span class="caps">REPL</span> and sprinkle <code>assert</code>s&nbsp;around.</p>
+<h3 id="if-writing-tests-is-hard-that-might-be-a-bug"><a class="toclink" href="#if-writing-tests-is-hard-that-might-be-a-bug">If writing tests is hard, that might be a&nbsp;bug</a></h3>
+<p>I’ve seen tests that do some impressive acrobatics just to construct 
+core objects, and likewise heard people grumble that they don’t want to 
+write tests because creating core objects is so&nbsp;hard.</p>
+<p>The thing is, <em>tests are just code</em>.  If you have a hard time constructing <em>your own</em> objects with some particular state, it might be a sign that your <span class="caps">API</span> is hard to&nbsp;use!</p>
+<p><span class="dquo">“</span>Well, we never added a way to do this because there’s no possible reason anyone would ever want it.”  But <em>you</em> want it, <em>right now</em>.  You’re consuming your own <span class="caps">API</span>, complaining that it can’t do X, and then not adding the ability to do X because no one would ever need&nbsp;X.</p>
+<p>One of the most underappreciated parts of writing tests is that they 
+force you to write actual code that uses your interfaces.  If doing 
+basic setup is a slog, fix those&nbsp;interfaces.</p>
+<h3 id="aggressively-make-your-test-suite-fast-and-reliable"><a class="toclink" href="#aggressively-make-your-test-suite-fast-and-reliable">Aggressively make your test suite fast and&nbsp;reliable</a></h3>
+<p>I’ve worked with test suites that took <em>hours</em> to run, if they ran at&nbsp;all.</p>
+<p>The tradeoff is obvious: these test suites were fairly thorough, and 
+speed was the cost of that thoroughness.  For critical apps, that might 
+be well worth it.  For very large apps, that might be&nbsp;unavoidable.</p>
+<p>For codebases that are starting out with no tests at all, it’s a huge
+ source of testing pain.  Your test suite should be as fast as possible,
+ or <em>you won’t run it</em>, and then you’ll (rightfully!) convince yourself that there’s no point in writing even more tests that you won’t&nbsp;run.</p>
+<p>If your code is just slow, consider this an excellent reason to make 
+it faster.  If you have a lot of tests, see if you can 
+consolidate&nbsp;some.</p>
+<p>Or if you have a handful of especially slow tests, I have a radical 
+suggestion: maybe just delete them.  If they’re not absolutely critical,
+ and they’re keeping you from running your test suite <em>constantly</em>,
+ they may not be worth the cost.  Deleting a test drops your coverage by
+ a fraction of a percent; never running your tests drops your coverage 
+to&nbsp;zero.</p>
+<p>Flaky tests are even worse.  Your tests should always, <em>always</em>,
+ pass completely.  If you have a test that fails 10% of the time and you
+ just can’t figure out why, disable or delete it.  It’s not telling you 
+anything useful, and in the meantime it’s training you to <em>ignore when your tests fail</em>.  If a failing test isn’t an immediate red alert, there’s no point in having tests at&nbsp;all.</p>
+<h3 id="run-it-automatically"><a class="toclink" href="#run-it-automatically">Run it&nbsp;automatically</a></h3>
+<p>Have you seen those GitHub projects where pull requests automatically
+ get a thing saying whether the test suite passed or failed?  Neat, 
+right?  It’s done through <a href="https://travis-ci.org/">Travis</a>, and it’s surprisingly painless to set up.  Once it <em>is</em>
+ set up, someone else’s computer will run your tests all the damn time 
+and bug you when they fail.  It’s really annoying, and 
+really&nbsp;great.</p>
+<p>(There’s also <a href="https://coveralls.io/">Coveralls</a>, which 
+measures your test coverage.  Neat, but if you’re struggling to write 
+tests at all, a looming reminder of your shame may not be the most 
+helpful&nbsp;thing.)</p>
+<p>I recently ran into an interesting problem in the form of Pelican, 
+the Python library that generates this blog.  It has tests for the <code>fr_FR</code> locale, and the test suite <em>skips them</em> if you don’t have that locale set up…  but the <span class="caps">README</span>
+ tells you that before you submit a pull request, you should generate 
+the locale so you can run the tests.  Naturally, I missed this, didn’t 
+have <code>fr_FR</code>, thought I passed all the tests, and submitted a pull request that instantly failed on&nbsp;Travis.</p>
+<p>Skipping tests because optional dependencies are missing is a tricky 
+affair.  When you write them, you think “no point claiming the test 
+failed when it doesn’t indicate problems with the actual codebase” — 
+when I run them, I think “oh, these tests were skipped, so they aren’t 
+really&nbsp;important”.</p>
+<h2 id="what-to-test"><a class="toclink" href="#what-to-test">What to&nbsp;test</a></h2>
+<h3 id="test-what-you-manually-test"><a class="toclink" href="#test-what-you-manually-test">Test what you manually&nbsp;test</a></h3>
+<p>When you’re working on a big feature or bugfix, you develop a little ritual for checking whether it’s done.  You crack open the <span class="caps">REPL</span>
+ and repeat the same few lines, or you run a script you hacked together,
+ or your launch your app and repeat the same few actions.  It gets 
+incredibly&nbsp;tedious.</p>
+<p>You may have similar rituals just before a big release: run the 
+thing, poke around a bit, try common stuff, be confident that at least 
+the basics&nbsp;work.</p>
+<p>These are the <em>best</em> things to test, because you’re already 
+testing them!  You can save yourself a lot of anguish if you convert 
+these rituals into code.  As an added benefit, other people can then 
+repeat your rituals without having to understand yours or invent their 
+own, and your test suite will serve as a rough description of what you 
+find most&nbsp;important.</p>
+<p>Sometimes, this is hard.  Give it a try anyway, even if (especially if) you don’t have a test suite at&nbsp;all.</p>
+<p>Sometimes, this is <em>really</em> hard.  Write tests for the parts you can, at least.  You can always sit down and work the rest out&nbsp;later.</p>
+<h3 id="test-whats-likely-to-break"><a class="toclink" href="#test-whats-likely-to-break">Test what's likely to&nbsp;break</a></h3>
+<p>Some things are easy to test.  If you have a function that checks 
+whether a number is even, oh boy!  You can write like fifty tests for 
+that, <em>no problem</em>.  Now you have fifty more tests!  Good&nbsp;job!</p>
+<p>That’s great, and feel free to write them all, but…  how likely is it
+ that anyone will ever change that function?  It does one trivial thing,
+ it can be verified correct at a glance, it doesn’t depend on anything 
+else, and it almost certainly can’t be improved&nbsp;upon.</p>
+<p>The primary benefit of testing is a defense against change.  When 
+code changes, tests help convince you that it still works correctly.  
+Testing code that has no reason to change doesn’t add much more value to
+ your test&nbsp;suite.</p>
+<p>This isn’t to say that you <em>shouldn’t</em> test trivial functions — especially since we can be <em>really bad</em>
+ at guessing what’ll change in the future — but when you have limited 
+willpower, they’re not the most efficient places to spend&nbsp;it.</p>
+<p>Knowing what to test is the same kind of artform as knowing what to 
+comment, and I think many of the same approaches apply.  Test obscure 
+things, surprising special cases.  Test things that were tricky to get 
+right, things that <em>feel</em> delicate.  Test things that are 
+difficult to verify just by reading the code.  If you feel the need to 
+explain yourself, it’s probably worth&nbsp;testing.</p>
+<h3 id="test-the-smallest-things-you-can-possibly-test"><a class="toclink" href="#test-the-smallest-things-you-can-possibly-test">Test the smallest things you can possibly&nbsp;test</a></h3>
+<p>It’s nice to have some tests that show your code works from a 
+thousand miles up.  Unfortunately, these also tend to be the slowest 
+(because they do a lot), most brittle (because any small change might 
+break many such tests at once), least helpful (because a problem might 
+come from anywhere), and least efficient (because two such tests will 
+run through much of the same&nbsp;code).</p>
+<p>People who are <em>into testing</em> like to go on about unit tests 
+versus functional tests, or maybe those are integration tests, or are 
+they acceptance tests, or end-to-end tests, or…&nbsp;christ.</p>
+<p>Forget the categories.  You already know the shape of your own codebase: it’s a hierarchy of lumps that each <em>feel</em>
+ like they relate to a particular concept, even if the code organization
+ doesn’t reflect that.  You’re writing a disassembler, and there’s some 
+code in various places that deals with jumps and labels?  That’s a lump,
+ even if the code isn’t contiguous on disk.  You, the human, know where 
+it&nbsp;is.</p>
+<p>So write your tests around those lumps, and make them as small as 
+possible.  Maybe you still have to run your entire disassembler to 
+actually run certain tests, but you can still minimize the extra work: 
+disable optional features and make the test as simple as possible.  If 
+you ever make changes to jumps or labels, you’ll know exactly which 
+tests to look for; if those tests ever break, you’ll have a good idea 
+of&nbsp;why.</p>
+<p>Don’t get me wrong; I know it’s <em>reassuring</em> to have a 
+mountain of tests that run through your entire app from start to finish,
+ just as a user would.  But in my experience, those tests break all the 
+time without actually telling you anything you didn’t already know, and 
+having more than a handful of them can bog down the entire test suite.  
+Hesitate before each one you&nbsp;write.</p>
+<h2 id="how-to-test"><a class="toclink" href="#how-to-test">How to&nbsp;test</a></h2>
+<h3 id="test-output-avoid-side-effects"><a class="toclink" href="#test-output-avoid-side-effects">Test output, avoid side&nbsp;effects</a></h3>
+<p>Testing code should be easy.  You make some input; you feed it to a 
+function; you check that the output is correct.  The precise nature of 
+“input” and “output” can easily spiral out of control, but at least the 
+process is simple&nbsp;enough.</p>
+<p>Testing code that has side effects is a huge, huge pain in the ass.  (And since tests are just code, that means <em>using</em> code that has side effects is also a pain in the&nbsp;ass.)</p>
+<p><span class="dquo">“</span>Side effect” here means exactly what it 
+sounds like: you feed input into a function, you get some output, and in
+ the meantime something elsewhere has changed.  Or in a similar vein, 
+the behavior of the function depends on something other than what’s 
+passed into the function.  The most common case is global 
+record-keeping, like app-wide configuration that sits at the module 
+level&nbsp;somewhere.</p>
+<p>It sucks, it’s confusing, avoid avoid&nbsp;avoid.</p>
+<p>So…  don’t use globals, I&nbsp;guess?</p>
+<p>I’ve heard a lot of programmers protest that there’s nothing very 
+difficult to understand about one global, and I’m going to commit heresy
+ here by admitting: <em>that’s probably true</em>!  The extra cognitive burden of using and testing code that relies on a <em>single</em> global is not particularly&nbsp;high.</p>
+<p>But one global begets another, and another.  Or perhaps your “one” 
+global mutates into a massive sprawling object with tendrils in 
+everything.  Soon, you realize you’ve written the <a href="https://github.com/rheit/zdoom/blob/master/src/r_draw.h#L28">Doom renderer</a> and you have <a href="https://github.com/rheit/zdoom/commit/8fa9aa26275e71b32cd92065c7ba6d80c7fd1b17">goofy obscure bugs</a> because it’s so hard to keep track of what’s going on at any given&nbsp;time.</p>
+<p>Similar to the much-maligned C <code>goto</code>, globals <em>aren’t</em>
+ an infectious and incurable toxin that will instantly and irreparably 
+putrefy your codebase.  They just have a cost, and you’ll only need to 
+pay it sometime down the road, and it’s usually not worth the five 
+minutes of effort saved.  If you must introduce a global, always take a 
+moment to feel <em>really bad</em> about what you’re&nbsp;doing.</p>
+<h3 id="test-negative-cases-and-edge-cases"><a class="toclink" href="#test-negative-cases-and-edge-cases">Test negative cases and edge&nbsp;cases</a></h3>
+<p>I used to work for a company.  As part of the hiring process, 
+prospective hires would be asked to implement a particular board game, 
+complete with tests.  Their solution would be dumped in my lap, for some
+ reason, and I would unleash the harsh light of my judgment 
+upon&nbsp;it.</p>
+<p>I’m being intentionally vague because I don’t want to help anyone 
+cheat, any more than I already am by telling you how to write tests.  So
+ let’s say the game is the most trivial of board games: tic 
+tac&nbsp;toe.</p>
+<p>A <em>significant</em> proportion of solutions I graded had test suites like&nbsp;this.</p>
+<table class="highlighttable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span>board = """
+    X--
+    -X-
+    --X
+"""
+assert check_winner(board) == "X"
+
+board = """
+    OOO
+    ---
+    ---
+"""
+assert check_winner(board) == "O"
+</pre></div>
+</td></tr></tbody></table>
+
+<p>And that was it.  Two or three tests for particular winning states.  
+(Often not even any tests for whether placing a piece actually worked, 
+but let’s leave that&nbsp;aside.)</p>
+<p>I would always mark down for this.  The above tests check that your code is <em>right</em>, but they don’t check that your code <strong>isn’t wrong</strong>.  What if there’s no winner, but your code thinks there&nbsp;is?</p>
+<p>That’s much harder to reason about, I grant you!  A tic tac toe board
+ only has a relatively small handful of possible winning states, but a 
+much larger number of possible non-winning states.  But I think what 
+really throws us is that winning is defined in the positive — “there 
+must be three in a row” — whereas non-winning is only defined as, well, 
+not winning.  We don’t tend to think of the <em>lack</em> of something as being&nbsp;concrete.</p>
+<p>When I took this test, I paid attention to the bugs I ran into while I
+ was writing my code, and I thought about what could go wrong with my 
+algorithm, and I made a few tests based on those educated guesses.  So 
+perhaps I’d check that these boards have no&nbsp;winner:</p>
+<table class="highlighttable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span>OO-     -O-     -X-
+O-X     -O-     --X
+-XX     -X-     X--
+</pre></div>
+</td></tr></tbody></table>
+
+<p>The left board has three of each symbol, but not in a row.  The 
+middle board has three in a row, but not all the same symbol.  The right
+ board has three in a row, but only if the board is allowed 
+to&nbsp;wrap.</p>
+<p>Are these cases likely to be false positives?  I have no idea.  All I did was consider for a moment what <em>could</em>
+ go wrong, then make up some boards that would have that kind of error. 
+ (One or two of the solutions I graded even had the kinds of false 
+positives that I’d written tests&nbsp;for!)</p>
+<p>The same kind of thinking — what could I have missed? — leads me swiftly to another glaring omission from this test suite: <em>what if there’s a tie?</em>
+  And, indeed, quite a few of the submissions I graded didn’t handle a 
+tie at all.  (Ties were less likely in the actual game than they are in 
+tic tac toe, but still possible.)  The game would ask you to make a 
+move, you wouldn’t be able to, and the game would linger 
+there&nbsp;forever.</p>
+<p>Don’t just write tests to give yourself the smug satisfaction that 
+you did something right.  Write tests to catch the ways you might 
+conceivably have done something <em>wrong</em>.  Imagine the code you’re testing as an adversary; how might you catch it making a&nbsp;mistake?</p>
+<p>If that doesn’t sound convincing, let me put this another way.  Consider this hypothetical test suite for a primality&nbsp;test.</p>
+<table class="highlighttable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_is_prime</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">is_prime</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_prime</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_prime</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_prime</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_prime</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_prime</span><span class="p">(</span><span class="mi">97</span><span class="p">)</span>
+</pre></div>
+</td></tr></tbody></table>
+
+<p>Quick: write some code that passes these tests.  Call it test-driven development&nbsp;practice.</p>
+<p>Here’s what I came up&nbsp;with:</p>
+<table class="highlighttable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</td></tr></tbody></table>
+
+<p>Whoops!</p>
+<p>A related benefit of negative tests is that they make sure your tests actually <em>work</em>.
+  I’ve seen one or two tests that couldn’t reasonably verify that the 
+output of some program was actually correct, so instead, they ran the 
+program and checked that there were no errors.  Later, something went 
+wrong in the test suite, and the program silently <em>didn’t run at all</em>
+ — which, naturally, produced no exceptions.  A single test that fed in 
+bad input and checked for an error would’ve caught this problem 
+right&nbsp;away.</p>
+<h3 id="refactor"><a class="toclink" href="#refactor">Refactor</a></h3>
+<p>Tests are code.  If you’re repeating yourself a lot or there’s a lot of friction for some common task, <em>refactor</em>.  Write some helpers.  See if your test harness can help you&nbsp;out.</p>
+<p>Tests are code.  Don’t write a bunch of magical, convoluted, brittle 
+garbage to power your tests.  If you can’t convince yourself that your 
+tests work, how can your tests convince you that the rest of your code 
+works?  You should be <em>more</em> confident in your tests than in the rest of your code, yet you’ll probably spend far <em>less</em> time maintaining it.  So err on the side of explicit and boring, even if you have to stick to repeating&nbsp;yourself.</p>
+<h2 id="troublesome-cases"><a class="toclink" href="#troublesome-cases">Troublesome&nbsp;cases</a></h2>
+<h3 id="external-state"><a class="toclink" href="#external-state">External&nbsp;state</a></h3>
+<p>Testing against something outside your program sucks.  With 
+filesystems, you can make a temporary directory.  With time, you can 
+(maybe) fake it.  In general, your life will be easier if you 
+consolidate all your external state access into as few places as 
+possible — easy to understand, easy to test, easy to swap out for some 
+alternative&nbsp;implementation.</p>
+<p>With databases, you’re just fucked.  Database access <em>pervades</em> most code that needs to touch a database at&nbsp;all.</p>
+<p>The common wisdom in the Python web development community is that you
+ should just run your test suite against a little SQLite database.  
+That’s a great idea, except that you’re suddenly restricted to the 
+subset of <span class="caps">SQL</span> that works identically in SQLite
+ and in your target database.  The next best thing is to run against an 
+actual instance of your target database and call it a&nbsp;day.</p>
+<p>And you should probably stop there; nothing I can come up with is any
+ better.  Even for very large apps with very complex databases, that 
+seems to be the best you can do.  You might end up spending twenty 
+minutes per test run starting up a full replicated setup and memcached 
+and whatever else, but I don’t have any better&nbsp;ideas.</p>
+<p>The problem is that database access still goes through <span class="caps">SQL</span>, and <span class="caps">SQL</span> is an entire other programming language you’re sending out over the wire.  You can’t easily swap in an in-process <span class="caps">SQL</span>
+ implementation — that’s called SQLite.  You can hide all database 
+access in functions with extremely long names and convoluted return 
+values that are only called in one place, then swap out a dummy 
+implementation for testing, but that’s really no fun at all.  Plus, it 
+doesn’t check that your <span class="caps">SQL</span> is actually&nbsp;correct.</p>
+<p>If you’re using an <span class="caps">ORM</span>, you have slightly more of a chance, but I’ve never seen an <span class="caps">ORM</span> that can natively execute queries against in-memory data structures.  (I would <em>love</em>
+ to, and it seems within the realm of possibility, but it would be a 
+huge amount of work and still not cover all the little places you’re 
+using functions and syntax specific to your&nbsp;database.)</p>
+<p>I don’t know.  I got&nbsp;nothin’.</p>
+<h3 id="procedural-generation-and-other-randomness"><a class="toclink" href="#procedural-generation-and-other-randomness">Procedural generation and other&nbsp;randomness</a></h3>
+<p>Imagine you wrote NetHack, which generates some 2D cavern structures.
+  How can you possibly test that the generated caverns are correct, when
+ they’re completely&nbsp;random?</p>
+<p>I haven’t gotten too deep into this, but I think there’s some fertile ground here.  You don’t know <em>exactly</em> what the output should be, but you certainly have some <em>constraints</em>
+ in mind.  For example, a cavern map should be at least 10% cave walls 
+and at least 30% open space, right?  Otherwise it’s not a cavern.  You 
+can write a test that verifies <em>that</em>, then just run it some number of&nbsp;times.</p>
+<p>You can’t be absolutely sure there are no edge cases (unless you are 
+extremely clever in how you write the terrain generation in the first 
+place), but each run of the test suite will leave you a little more 
+confident.  There’s a real risk of flaking here, so you’ll have to be 
+extra vigilant about diagnosing and fixing any&nbsp;problems.</p>
+<p>You can also write some more specific tests if you give your 
+thing-generator as many explicit parameters as possible, rather than 
+having it make all its decisions internally.  Maybe your cavern 
+algorithm takes a parameter for how much open space there is, from 0.3 
+to 0.9.  If you dial it down to the minimum, will there still be an open
+ path from the entrance to the exit?  You can test for that,&nbsp;too.</p>
+<h3 id="web-output"><a class="toclink" href="#web-output">Web&nbsp;output</a></h3>
+<p>This is kind of an interesting problem.  <span class="caps">HTML</span> is more readily inspected than an image; you can parse it, drill down with XPath or <span class="caps">CSS</span> selectors or what have you, and check that the right text is in the right&nbsp;places.</p>
+<p>But!  You may also want to know that it <em>looks right</em>, and 
+that’s much more difficult.  The obvious thing is to automate a browser,
+ take a screenshot, and compare it to a known good rendering — all of 
+which will come crumbling down the moment someone makes a border one 
+pixel wider.  I don’t know if we can do any better, unless we can 
+somehow explain to a computer what “looks right”&nbsp;means.</p>
+<p>Something I’d like to see is an automated sanity check for <span class="caps">HTML</span> + <span class="caps">CSS</span>.  Lay out the page <em>without rendering it</em>
+ and check for any obvious screwups, like overlapping text or unwanted 
+overflow.  I don’t know how much practical use this would be (or whether
+ it already exists), but it seems like a nice easy way to check that you
+ didn’t do something catastrophic.  You wouldn’t even necessarily need 
+it in your test suite — just plug it into a crawler and throw it at 
+your&nbsp;site.</p>
+<h3 id="guis-and-games"><a class="toclink" href="#guis-and-games">GUIs and&nbsp;games</a></h3>
+<p>Oh my god I have no idea.  Keep your <span class="caps">UI</span> separated from your internals, test the internals, and hope for the&nbsp;best.</p>
+<h2 id="but-most-of-all"><a class="toclink" href="#but-most-of-all">But most of&nbsp;all</a></h2>
+<p>Just test <em>something</em>.  Going from zero tests to one test is an infinite&nbsp;improvement.</p>
+<p>Once you have a tiny stub of a test suite, you have something to 
+build on, and the next test will be a little easier to write.  You might
+ even find yourself in the middle of adding a feature and suddenly 
+thinking, hey! this is a great opportunity to write a quick test 
+or&nbsp;two.</p>
+        </div>
+
+        
+
+        <footer>
+            <ul class="meta">
+    <li class="byline author vcard">
+        Posted by <span class="fn">Eevee</span>
+        in <a class="category" href="https://eev.ee/blog/">
+            <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-blog.png" alt="[blog]">
+ blog</a>
+    </li>
+    <li><time datetime="2016-08-22T08:49:00-07:00" pubdate="">Mon Aug 22, 2016</time>
+</li>
+    <li class="tags">
+        <a class="tag" href="https://eev.ee/everything/tags/tech/">#tech</a>
+    </li>
+</ul>
+
+            <div class="sharing">
+</div>
+
+        </footer>
+    </article>
+
+    <section class="oh-wow-patreon">
+        <figure>
+            <a href="https://www.patreon.com/eevee"><img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/eevee-patreon.png" alt=""></a>
+        </figure>
+        <p>If you like when I write words, you can fund future wordsmithing (and other endeavors) by throwing a couple bucks at my <a href="https://www.patreon.com/eevee">Patreon</a>!</p>
+        <p>(<a href="http://rumwik.tumblr.com/post/109428225065/eevee-learned-pay-day">illus. by Rumwik</a>)</p>
+    </section>
+
+    <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><iframe id="dsq-app1" name="dsq-app1" allowtransparency="true" scrolling="no" tabindex="0" title="Disqus" style="width: 1px !important; min-width: 100% !important; border: medium none !important; overflow: hidden !important; height: 8245px !important;" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/a.html" horizontalscrolling="no" verticalscrolling="no" width="100%" frameborder="0"></iframe></div>
+    <script type="text/javascript">
+        var disqus_config = function() {
+            this.page.url = 'https://eev.ee/blog/2016/08/22/testing-for-people-who-hate-testing/';
+            this.page.title = 'Testing, for people who hate testing';
+        };
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//veekun.disqus.com/embed.js';
+            dsq.setAttribute('data-timestamp', +new Date());
+            (document.head || document.body).appendChild(dsq);
+        })();
+    </script>
+</section>
+
+        </div>
+
+<aside id="sidebar">
+
+    <ul class="eevee-navigation">
+                    <li style="background-color: #f6b441;">
+            <a href="https://eev.ee/blog/">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-blog.png" alt="blog">
+                </div>
+                <div class="-label">
+                    <h2>blog</h2>
+                    <p class="-details">detailed, thoughtful prose about why computers are the worst</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #ee7300;">
+            <a href="https://eev.ee/dev/">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="dev">
+                </div>
+                <div class="-label">
+                    <h2>dev</h2>
+                    <p class="-details">updates on cool things i make</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #c57be6;">
+            <a href="https://eev.ee/everything/">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-everything.png" alt="everything">
+                </div>
+                <div class="-label">
+                    <h2>everything</h2>
+                    <p class="-details">why limit yourself when you can have it all</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #399ccd;">
+            <a href="https://eev.ee/everything/archives/">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-archives.png" alt="archives">
+                </div>
+                <div class="-label">
+                    <h2>archives</h2>
+                    <p class="-details">turn the clock back to æons past</p>
+                </div>
+            </a>
+        </li>
+
+        <li class="-empty"></li>
+                    <li style="background-color: #9966cc;">
+            <a href="mailto:eevee.fuzzynotepad@veekun.com">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-email.png" alt="email">
+                </div>
+                <div class="-label">
+                    <h2>email</h2>
+                    <p class="-details">do people still use this</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #55acee;">
+            <a href="https://twitter.com/eevee">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-twitter.png" alt="twitter">
+                </div>
+                <div class="-label">
+                    <h2>twitter</h2>
+                    <p class="-details">firehose of bad jokes</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #ff5900;">
+            <a href="https://www.patreon.com/eevee">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-patreon.png" alt="patreon">
+                </div>
+                <div class="-label">
+                    <h2>patreon</h2>
+                    <p class="-details">help pay my salary</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #29c501;">
+            <a href="https://cash.me/$eevee">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-square-cash.png" alt="square">
+                </div>
+                <div class="-label">
+                    <h2>square</h2>
+                    <p class="-details">just give me money?</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #009cde;">
+            <a href="https://www.paypal.me/lexyeevee">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-paypal.png" alt="paypal">
+                </div>
+                <div class="-label">
+                    <h2>paypal</h2>
+                    <p class="-details">just give me money, again?</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #4183c4;">
+            <a href="https://github.com/eevee">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-github.png" alt="github">
+                </div>
+                <div class="-label">
+                    <h2>github</h2>
+                    <p class="-details">lots of abandoned code</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #35465c;">
+            <a href="https://lexyeevee.tumblr.com/">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-tumblr.png" alt="art tumblr">
+                </div>
+                <div class="-label">
+                    <h2>art tumblr</h2>
+                    <p class="-details">just art</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #fa5c5c;">
+            <a href="https://eevee.itch.io/">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-itch.png" alt="itch.io">
+                </div>
+                <div class="-label">
+                    <h2>itch.io</h2>
+                    <p class="-details">indie games</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #6441a4;">
+            <a href="https://twitch.tv/lexyeevee">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-twitch.png" alt="twitch">
+                </div>
+                <div class="-label">
+                    <h2>twitch</h2>
+                    <p class="-details">occasional old game streams</p>
+                </div>
+            </a>
+        </li>
+
+                    <li style="background-color: #cc181e;">
+            <a href="https://www.youtube.com/user/lexyeevee">
+                <div class="-glyph">
+                    <img src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/logo-youtube.png" alt="youtube">
+                </div>
+                <div class="-label">
+                    <h2>youtube</h2>
+                    <p class="-details">mostly cat videos</p>
+                </div>
+            </a>
+        </li>
+
+    </ul>
+
+    <section>
+        <h1><a href="https://eev.ee/everything/archives/">Recent stuff</a></h1>
+        <ul id="recent_posts">
+        <li class="post">
+            <a href="https://eev.ee/dev/2017/05/09/weekly-roundup-potluck-jam/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="[dev]">
+
+                Weekly roundup: Potluck&nbsp;jam
+            </a>
+        </li>
+        <li class="post">
+            <a href="https://eev.ee/dev/2017/05/01/weekly-roundup-the-eagle-has-landed/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="[dev]">
+
+                Weekly roundup: The eagle has&nbsp;landed
+            </a>
+        </li>
+        <li class="post">
+            <a href="https://eev.ee/dev/2017/04/26/weekly-roundup-business-as-usual/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="[dev]">
+
+                Weekly roundup: Business as&nbsp;usual
+            </a>
+        </li>
+        <li class="post">
+            <a href="https://eev.ee/dev/2017/04/18/weekly-roundup-hp-restored/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="[dev]">
+
+                Weekly roundup: HP&nbsp;restored
+            </a>
+        </li>
+        <li class="post">
+            <a href="https://eev.ee/dev/2017/04/11/weekly-roundup-fever-dreams/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="[dev]">
+
+                Weekly roundup: Fever&nbsp;dreams
+            </a>
+        </li>
+        <li class="post">
+            <a href="https://eev.ee/dev/2017/04/02/weekly-roundup-a-model-week/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="[dev]">
+
+                Weekly roundup: A model&nbsp;week
+            </a>
+        </li>
+        <li class="post">
+            <a href="https://eev.ee/dev/2017/03/26/weekly-roundup-back-in-the-saddle/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-dev.png" alt="[dev]">
+
+                Weekly roundup: Back in the&nbsp;saddle
+            </a>
+        </li>
+        <li class="post">
+            <a href="https://eev.ee/blog/2017/03/23/why-love/">
+                <img class="category-glyph" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/category-blog.png" alt="[blog]">
+
+                Why&nbsp;LÖVE?
+            </a>
+        </li>
+        </ul>
+    </section>
+
+    <section>
+        <h1><a href="https://eev.ee/everything/tags/">Tags</a></h1>
+        <div class="sidebar-tags">
+            <a href="https://eev.ee/everything/tags/birthday/">birthday</a>
+            <a href="https://eev.ee/everything/tags/cats/">cats</a>
+            <a href="https://eev.ee/everything/tags/culture/">culture</a>
+            <a href="https://eev.ee/everything/tags/doom/">doom</a>
+            <a href="https://eev.ee/everything/tags/dywypi/">dywypi</a>
+            <a href="https://eev.ee/everything/tags/food/">food</a>
+            <a href="https://eev.ee/everything/tags/gadgets/">gadgets</a>
+            <a href="https://eev.ee/everything/tags/gamedev/">gamedev</a>
+            <a href="https://eev.ee/everything/tags/gender/">gender</a>
+            <a href="https://eev.ee/everything/tags/git/">git</a>
+            <a href="https://eev.ee/everything/tags/identity/">identity</a>
+            <a href="https://eev.ee/everything/tags/infosec/">infosec</a>
+            <a href="https://eev.ee/everything/tags/isaacs-descent/">isaac's descent</a>
+            <a href="https://eev.ee/everything/tags/law/">law</a>
+            <a href="https://eev.ee/everything/tags/linux/">linux</a>
+            <a href="https://eev.ee/everything/tags/making-things/">making things</a>
+            <a href="https://eev.ee/everything/tags/mario-maker/">mario maker</a>
+            <a href="https://eev.ee/everything/tags/math/">math</a>
+            <a href="https://eev.ee/everything/tags/media/">media</a>
+            <a href="https://eev.ee/everything/tags/meta/">meta</a>
+            <a href="https://eev.ee/everything/tags/patreon/">patreon</a>
+            <a href="https://eev.ee/everything/tags/perl/">perl</a>
+            <a href="https://eev.ee/everything/tags/personal/">personal</a>
+            <a href="https://eev.ee/everything/tags/photos/">photos</a>
+            <a href="https://eev.ee/everything/tags/php/">php</a>
+            <a href="https://eev.ee/everything/tags/plt/">plt</a>
+            <a href="https://eev.ee/everything/tags/pokemon/">pokemon</a>
+            <a href="https://eev.ee/everything/tags/popular/">popular</a>
+            <a href="https://eev.ee/everything/tags/project-euler/">project euler</a>
+            <a href="https://eev.ee/everything/tags/puzzles/">puzzles</a>
+            <a href="https://eev.ee/everything/tags/pyramid/">pyramid</a>
+            <a href="https://eev.ee/everything/tags/python/">python</a>
+            <a href="https://eev.ee/everything/tags/raidne/">raidne</a>
+            <a href="https://eev.ee/everything/tags/reference/">reference</a>
+            <a href="https://eev.ee/everything/tags/runed-awakening/">runed awakening</a>
+            <a href="https://eev.ee/everything/tags/rust/">rust</a>
+            <a href="https://eev.ee/everything/tags/sanpera/">sanpera</a>
+            <a href="https://eev.ee/everything/tags/spline/">spline</a>
+            <a href="https://eev.ee/everything/tags/squiggle/">squiggle</a>
+            <a href="https://eev.ee/everything/tags/status/">status</a>
+            <a href="https://eev.ee/everything/tags/styx/">styx</a>
+            <a href="https://eev.ee/everything/tags/systems/">systems</a>
+            <a href="https://eev.ee/everything/tags/tech/">tech</a>
+            <a href="https://eev.ee/everything/tags/tools/">tools</a>
+            <a href="https://eev.ee/everything/tags/typography/">typography</a>
+            <a href="https://eev.ee/everything/tags/ui/">ui</a>
+            <a href="https://eev.ee/everything/tags/unicode/">unicode</a>
+            <a href="https://eev.ee/everything/tags/veekun/">veekun</a>
+            <a href="https://eev.ee/everything/tags/web/">web</a>
+            <a href="https://eev.ee/everything/tags/yelling/">yelling</a>
+        </div>
+    </section>
+
+</aside>    </div>
+    <footer role="contentinfo">
+        <p>
+            © 2011–2016 Eevee (Lexy Munroe)
+            ·
+            <a rel="license" href="https://creativecommons.org/licenses/by/3.0/us/">
+                <img title="Licensed under Creative Commons Attribution 3.0 United States" alt="Licensed under Creative Commons Attribution 3.0 United States" src="Testing,%20for%20people%20who%20hate%C2%A0testing%20_%20fuzzy%20notepad_files/80x15.png">
+            </a>
+            ·
+            Backgrounds from <a href="https://www.toptal.com/designers/subtlepatterns/">Subtle Patterns</a>
+        </p>
+        <p>
+            Powered by <a href="http://docs.getpelican.com/en/3.3.0/">Pelican</a>
+            ·
+            <a href="https://github.com/eevee/eev.ee">Source code</a>
+        </p>
+    </footer>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-25539054-1', 'eev.ee');
+        ga('set', 'forceSSL', true);
+        ga('send', 'pageview');
+    </script>
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none; max-width: none;"></div></div><iframe style="display: none;"></iframe></body></html>
